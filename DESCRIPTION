@@ -1,7 +1,7 @@
 Package: EnrichDO
 Type: Package
 Title: Disease ontology annotation and enrichment analysis
-Version: 0.99.0
+Version: 0.99.1
 Author: c(person(given="Haixiu",family="Yang",email="yanghaixiu@ems.hrbmu.edu.cn",role=c("aut")),
           person(given="Hongyu",family="Fu",email="15736262010@163.com",role=c("cre"))
           )
