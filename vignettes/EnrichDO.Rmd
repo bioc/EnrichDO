@@ -1,5 +1,5 @@
 ---
-title: "EnrichDO: Disease Ontology Enrichment Analysis"
+title: "EnrichDO: a Global Weighted Model for Disease Ontology Enrichment Analysis"
 author: 
 - name: Liang Cheng
   affiliation: College of Bioinformatics Science and Technology, Harbin Medical University
@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-We developed EnrichDO package to promote the investigation of diseases. EnrichDO combines topological properties of disease ontology structure to implement disease ontology enrichment analysis. Enrichment analyses including a variety of statistical models and visualization schemes for discovering the disease-gene relationship under biological big data.
+Disease Ontology (DO) enrichment analysis is an effective means to discover the associations between genes and diseases. However, most DO-based enrichment methods were unable to solve the over enriched problem caused by the “true-path” rule. To address this problem, we propose a global weighted model termed EnrichDO. Based on the latest annotation of the human genome with DO terms, EnrichDO aims to identify locally significant enriched nodes by comprehensively considering the DO graph topology, and assigning different initial weights and dynamic weights for annotated genes. EnrichDO encompasses a variety of statistical models and visualization schemes for discovering the disease-gene relationship under biological big data. Currently uploaded to Bioconductor, we anticipate that our R package will provide more convenient and reliable analysis outcomes.
 
 ```{r setup,results='hide'}
 library(EnrichDO)
