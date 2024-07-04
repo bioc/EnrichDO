@@ -1,22 +1,25 @@
 Package: EnrichDO
 Type: Package
 Title: Disease ontology annotation and enrichment analysis
-Version: 0.99.1
-Author: c(person(given="Haixiu",family="Yang",email="yanghaixiu@ems.hrbmu.edu.cn",role=c("aut")),
-          person(given="Hongyu",family="Fu",email="15736262010@163.com",role=c("cre"))
+Version: 0.99.2
+Authors@R: c(
+          person("Liang","Cheng",,"liangcheng@hrbmu.edu.cn",role=c("aut")),
+          person("Haixiu","Yang",,"yanghaixiu@ems.hrbmu.edu.cn",role=c("aut")),
+          person("Hongyu","Fu",,"15736262010@163.com",role=c("cre"))
           )
-Maintainer: Liang Cheng <liangcheng@hrbmu.edu.cn>
 Description: This package combines topological properties of 
     disease ontology structure to implement disease ontology 
     enrichment analysis.Enrichment analyses including a variety 
     of statistical models and visualization schemes for discovering 
     the disease-gene relationship under biological big data.
+    EnrichDO exhibits higher accuracy that often yield more specific 
+    significant DO terms, which alleviate the over enriched problem.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: BiocGenerics, RColorBrewer, Rgraphviz, clusterProfiler,
     dplyr, ggplot2, graph, magrittr, methods, pheatmap,
-    purrr, readr, stringr, tidyr
+    purrr, readr, stringr, tidyr, grDevices, stats
 biocViews: Annotation, Visualization, 
         GeneSetEnrichment, Software
 Depends: 
