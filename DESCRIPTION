@@ -1,7 +1,7 @@
 Package: EnrichDO
 Type: Package
 Title: Disease ontology annotation and enrichment analysis
-Version: 0.99.2
+Version: 0.99.3
 Authors@R: c(
           person("Liang","Cheng",,"liangcheng@hrbmu.edu.cn",role=c("aut")),
           person("Haixiu","Yang",,"yanghaixiu@ems.hrbmu.edu.cn",role=c("aut")),
@@ -27,5 +27,6 @@ Depends:
 RoxygenNote: 7.3.1
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    org.Hs.eg.db
 VignetteBuilder: knitr
