@@ -1,11 +1,11 @@
 Package: EnrichDO
 Type: Package
 Title: Disease ontology annotation and enrichment analysis
-Version: 0.99.4
+Version: 0.99.5
 Authors@R: c(
           person("Liang","Cheng",,"liangcheng@hrbmu.edu.cn",role=c("aut")),
           person("Haixiu","Yang",,"yanghaixiu@ems.hrbmu.edu.cn",role=c("aut")),
-          person("Hongyu","Fu",,"15736262010@163.com",role=c("cre"))
+          person("Hongyu","Fu",,"2287531995@qq.com",role=c("cre"))
           )
 Description: This package combines topological properties of 
     disease ontology structure to implement disease ontology 
