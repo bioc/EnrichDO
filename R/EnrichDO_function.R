@@ -9,9 +9,9 @@
 #'@param minGsize indicates that doterms with less annotation genes than minGsize are ignored, and the P value of these doterms is set to 1.
 #'@param traditional a logical variable, TRUE for traditional enrichment analysis, FALSE for enrichment analysis with weights. Default is FALSE.
 #'@param delta Set the threshold of nodes, if the p value of doterm is greater than delta, the nodes are not significant, and these nodes are not weighted.
-#'@param result_do Receives the file output by the wrireResult function, which is used to visually display the enrichment results (without running the enrichment operation again).
+#'@param resultDO Receives the file output by the wrireResult function, which is used to visually display the enrichment results (without running the enrichment operation again).
 #'@param penalize Logical value, whether to add a penalty to the node.Adding a penalty will look for nodes with more branches.
-#'@return A \code{enrich} instance.
+#'@return A \code{enrichResult} instance.
 #'@importFrom magrittr `%>%`
 #'@importFrom purrr map pwalk map_dbl walk2 map2 map_int
 #'@importFrom dplyr mutate filter select arrange
@@ -38,7 +38,7 @@
 #'#Draw from wrireResult output files
 #'#Firstly, read the wrireResult output file,using the following two lines
 #'data<-read.delim(file.path(system.file("examples", package = "EnrichDO"),"result.txt"))
-#'doEnrich(result_do = data)
+#'doEnrich(resultDO = data)
 #'#then, Use the drawing function you need
 #'drawGraphViz(enrich)    #Tree diagram
 #'drawPointGraph(enrich)  #Bubble diagram
@@ -47,10 +47,11 @@
 
 
 #主要函数
-doEnrich <- function(interestGenes,test="hypergeomTest",method="BH",m=1,maxGsize=5000,minGsize=5,traditional=FALSE,delta=0.01,result_do=NULL,penalize=TRUE) {
-  if(!is.null(result_do)){
-	  TermStruct(result_do=result_do)
-  return("Now you can use the drawing function")
+doEnrich <- function(interestGenes,test=c("hypergeomTest", "fisherTest","binomTest","chisqTest","logoddTest" ),method="BH",m=1,maxGsize=5000,minGsize=5,traditional=FALSE,delta=0.01,resultDO=NULL,penalize=TRUE) {
+  test <- match.arg(test,several.ok = FALSE)
+  if(!is.null(resultDO)){
+    TermStruct(resultDO=resultDO)
+    return("Now you can use the drawing function")
   }
   #初始化
   init(traditional)
@@ -60,41 +61,55 @@ doEnrich <- function(interestGenes,test="hypergeomTest",method="BH",m=1,maxGsize
     mutate(cg.len=map_int(cg.arr, length)) %>%
     mutate(ig.len=length(interestGenes))
   #2024-1-18提取出和兴趣集因有交集,且满足minGsize和maxGsize的DOID
-  current_enrich<-filter(enrich,cg.len!=0,gene.len>=minGsize,gene.len<=maxGsize)
-  DOID_C<<-current_enrich$DOID
+  currentEnrich<-filter(enrich,cg.len!=0,gene.len>=minGsize,gene.len<=maxGsize)
+  doidCount<<-currentEnrich$DOID
 
   #2024-1-18
   if(traditional==TRUE){
-    pwalk(current_enrich,function(DOID,p,gene.arr,gene.w,...){
+    pwalk(currentEnrich,function(DOID,p,gene.arr,gene.w,...){
       p<-Test(test,interestGenes ,gene.arr,gene.w)
       enrich[enrich$DOID==DOID,]$p<<-p
     })
   }else{
     #2024-1-18
-    enrich$child.arr<<-sapply(enrich$child.arr,function(x){intersect(x,DOID_C)})
+    enrich$child.arr<<-sapply(enrich$child.arr,function(x){intersect(x,doidCount)})
     enrich$child.len<<-sapply(enrich$child.arr,function(x){length(x)})
 
     #从叶子节点向父节点逐级计算
     for(i in max(enrich$level):m) {
       #获取当前层
       #2024-1-18,选择满足DOID_C，minGsize,maxGsize的DOID
-      current.level.terms <- enrich %>% filter(level==i,DOID%in%DOID_C)
+      currentLevelTerms <- enrich %>% filter(level==i,DOID%in%doidCount)
       #2024-1-18记录每层的节点数和注释基因数
-      level_DOID<-length(current.level.terms$DOID)
-      level_gene<-length(unique(unlist(current.level.terms$gene.arr)))
-      cat(str_c("LEVEL: ", i,"\t",level_DOID," nodes\t",level_gene," genes to be scored\n"))
+      levelDOID<-length(currentLevelTerms$DOID)
+      levelGene<-length(unique(unlist(currentLevelTerms$gene.arr)))
+      message(str_c("LEVEL: ", i,"\t",levelDOID," nodes\t",levelGene," genes to be scored"))
       #迭代每一行
-      pwalk(current.level.terms, function(DOID, gene.arr, gene.w, parent.arr, child.arr, ...) {
+      pwalk(currentLevelTerms, function(DOID, gene.arr, gene.w, parent.arr, child.arr, ...) {
         #计算term相似度
         computeTermSig(interestGenes, i, DOID, gene.arr, gene.w, parent.arr, child.arr,test ,traditional,delta,penalize)
       })
 
     }
   }
-
-  enrich <<- enrich %>% arrange(p)
-  enrich <<- mutate(enrich, p.adjust=p.adjust(p, method=method))
-  print(method)
-  print(test)
-  return(enrich)
+  assign("enrich", enrich,envir = .EnrichDOenv)
+  enrich<-get("enrich",envir = .EnrichDOenv)
+  enrich <- enrich %>% arrange(p)
+  enrich <- mutate(enrich, p.adjust=p.adjust(p, method=method))
+  result <-new("EnrichResult",
+               enrich          = enrich,
+               interestGenes   = interestGenes,
+               test            = test,
+               method          = method,
+               m               = m,
+               maxGsize        = maxGsize,
+               minGsize        = minGsize,
+               delta           = delta,
+               traditional     = traditional,
+               penalize        = penalize
+  )
+  rm(enrich, envir = .GlobalEnv)
+  rm(doidCount, envir = .GlobalEnv)
+  #rm(dotermgenes, envir = .GlobalEnv)
+  return(result)
 }

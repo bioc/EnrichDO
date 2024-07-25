@@ -12,7 +12,7 @@
 #'@examples
 #'demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 #'sample1<-doEnrich(interestGenes=demo.data)
-#'drawBarGraph(enrich=sample1,n=10,delta=0.05)
+#'drawBarGraph(enrich=sample1@enrich,n=10,delta=0.05)
 
 drawBarGraph <- function(enrich=enrich,n=10,delta=1e-15) {
   data <- enrich %>%
@@ -23,7 +23,7 @@ drawBarGraph <- function(enrich=enrich,n=10,delta=1e-15) {
   data <- data[1:n,]
   data<-na.omit(data)
   if(dim(data)[1]<n){
-    cat(paste0("\033[31m","The threshold delta is too low, only ",dim(data)[1] ," nodes are less than the threshold","\n","\033[39m"))
+    message(str_c("The threshold delta is too low, only ",dim(data)[1] ," nodes are less than the threshold","\n"))
   }
 
   ggplot(data, aes(x=reorder(DO, log10p), y=geneRatio, fill=log10p)) +
@@ -47,7 +47,7 @@ drawBarGraph <- function(enrich=enrich,n=10,delta=1e-15) {
 #'@examples
 #'demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 #'sample2<-doEnrich(interestGenes=demo.data)
-#'drawPointGraph(enrich=sample2,n=10,delta=0.05)
+#'drawPointGraph(enrich=sample2@enrich,n=10,delta=0.05)
 drawPointGraph <- function(enrich=enrich,n=10,delta=1e-15) {
   data <- enrich %>%
     filter(p<=delta) %>%
@@ -57,7 +57,7 @@ drawPointGraph <- function(enrich=enrich,n=10,delta=1e-15) {
   data <- data[1:n,]
   data<-na.omit(data)
   if(dim(data)[1]<n){
-    cat(paste0("\033[31m","The threshold delta is too low, only ",dim(data)[1] ," nodes are less than the threshold","\n","\033[39m"))
+    message(str_c("The threshold delta is too low, only ",dim(data)[1] ," nodes are less than the threshold","\n"))
   }
 
   ggplot(data) +
@@ -78,8 +78,8 @@ drawPointGraph <- function(enrich=enrich,n=10,delta=1e-15) {
 #'@examples
 #'demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 #'sample3<-doEnrich(interestGenes=demo.data)
-#'writeDoTerms(sample3)
-writeDoTerms <- function(doterms=doterms,file="doterms.txt") {
+#'writeDoTerms(doterms,file=file.path(tempdir(),"doterms.txt"))
+writeDoTerms <- function(doterms=doterms,file) {
   data <- doterms %>%
     mutate(genes=map_chr(gene.arr, str_c, collapse=",")) %>%
     mutate(parents=map_chr(parent.arr, str_c, collapse=",")) %>%
@@ -103,8 +103,8 @@ writeDoTerms <- function(doterms=doterms,file="doterms.txt") {
 #'@examples
 #'demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 #'sample4<-doEnrich(interestGenes=demo.data)
-#'writeResult(sample4)
-writeResult <- function(enrich=enrich,file="result.txt",Q=1,P=1) {
+#'writeResult(sample4@enrich,file=file.path(tempdir(),"result.txt"))
+writeResult <- function(enrich=enrich,file,Q=1,P=1) {
   data <- enrich %>%
     mutate(cg=map_chr(cg.arr, str_c, collapse=","))%>%
 	mutate(geneRatio=paste0(cg.len,"/",ig.len)) %>%
@@ -131,18 +131,20 @@ writeResult <- function(enrich=enrich,file="result.txt",Q=1,P=1) {
 #'@importFrom magrittr `%>%`
 #'@importFrom methods new
 #'@importFrom tidyr unnest
+#'@importFrom grDevices heat.colors
 #'@importFrom RColorBrewer brewer.pal
 #'@export
 #'@examples
 #'demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 #'sample5<-doEnrich(interestGenes=demo.data)
-#'drawGraphViz(sample5)
+#'drawGraphViz(sample5@enrich)
 #'
 #'#The p-value and the number of intersections are not visible
-#'drawGraphViz(sample5,numview=FALSE,pview=FALSE)
+#'drawGraphViz(sample5@enrich,numview=FALSE,pview=FALSE)
 drawGraphViz <- function(enrich0=enrich, n=10,labelfontsize=14,numview=TRUE,pview=TRUE) {
 
   enrich0 <- enrich0 %>% arrange(p)
+  assign("enrich",enrich0,envir = .GlobalEnv)
 
   data <- enrich0[1:n, ]
   nodes <- c()
@@ -180,7 +182,10 @@ drawGraphViz <- function(enrich0=enrich, n=10,labelfontsize=14,numview=TRUE,pvie
   nAttrs$fontsize <- labelfontsize
 
   #Fill color
-  colors <- brewer.pal(9,'YlOrRd')
+  #colors <- brewer.pal(9,'YlOrRd')
+  colors<-heat.colors(9)
+  colors<-colors[9:1]
+
   data.extends <- enrich0 %>%
     filter(DOID %in% nodes(rEG)) %>%
     arrange(p) %>%
@@ -209,12 +214,12 @@ drawGraphViz <- function(enrich0=enrich, n=10,labelfontsize=14,numview=TRUE,pvie
     for (i in 1:length(g1layout@AgNode)) {
 	pval<-nAttrs[["pvalue"]][[g1layout@AgNode[[i]]@name]]
 	if(pval!=1){pval<-format(pval,digit=5,scientific=TRUE)}
-    text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])),labels=pval,pos=1, col="red",cex = 0.5)
+    text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])),labels=pval,pos=1, col="black",cex = 0.5)
   }
   }
   if(numview==TRUE){
     for (i in 1:length(g1layout@AgNode)) {
-    text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])),labels=nAttrs[["cglen"]][[g1layout@AgNode[[i]]@name]],pos=3, col="dark red",cex = 0.5)
+    text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])),labels=nAttrs[["cglen"]][[g1layout@AgNode[[i]]@name]],pos=3, col="dark blue",cex = 0.5)
   }
   }
 
@@ -236,13 +241,12 @@ drawGraphViz <- function(enrich0=enrich, n=10,labelfontsize=14,numview=TRUE,pvie
 #'@importFrom purrr map2
 #'@importFrom BiocGenerics intersect setdiff
 #'@importFrom grDevices colorRampPalette
-#'@importFrom RColorBrewer brewer.pal
 #'@importFrom clusterProfiler bitr
 #'@export
 #'@examples
 #'demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 #'sample6<-doEnrich(interestGenes=demo.data)
-#'drawHeatmap(interestGenes=demo.data,enrich = sample6,gene_n = 10,fontsize_row = 8,readable=TRUE)
+#'drawHeatmap(interestGenes=demo.data,enrich = sample6@enrich,gene_n = 10)
 
 drawHeatmap<-function(interestGenes,enrich=enrich,DOID_n=10,gene_n=50,fontsize_row=10,readable=TRUE,...){
 
@@ -259,24 +263,24 @@ drawHeatmap<-function(interestGenes,enrich=enrich,DOID_n=10,gene_n=50,fontsize_r
 
   if(length(diffGene)!=0){
   note<-paste0("\033[31m","The following genes you input do not exist in the top DOID_n nodes:","\n",paste0(diffGene,collapse = " "),"\n","\033[39m")
-  cat(note)
+  message(note)
   }
 
-  assign("weight_matrix",NULL,pos=1)
-  weight_matrix<<-matrix(0,nrow = n+1,ncol = length(interestgenes),dimnames = list(c(data$DOID,"colSum"),interestgenes))
+  assign("weightMatrix",NULL,pos=1)
+  weightMatrix<<-matrix(0,nrow = n+1,ncol = length(interestgenes),dimnames = list(c(data$DOID,"colSum"),interestgenes))
 
   #DOID-gene权重矩阵构建
   map2(data$gene.w,data$DOID,function(w,id){
     gene<-w[intersect(interestgenes,names(w))]
-    weight_matrix[id,names(gene)]<<-as.numeric(gene)
+    weightMatrix[id,names(gene)]<<-as.numeric(gene)
   })
-  weight_matrix[n+1,]<<-colSums(weight_matrix)
-  weightmatrix<-t(weight_matrix[-(n+1),names(sort(weight_matrix[n+1,],decreasing = TRUE)[1:m])])
+  weightMatrix[n+1,]<<-colSums(weightMatrix)
+  weightmatrix<-t(weightMatrix[-(n+1),names(sort(weightMatrix[n+1,],decreasing = TRUE)[1:m])])
 
   if(readable==TRUE){
     #提供基因标签展示为symbol
     entrez<-row.names(weightmatrix)
-    cat(paste0("\033[31m","gene symbol conversion result: ","\033[39m"))
+    message("gene symbol conversion result: ")
     symbol<-clusterProfiler::bitr(entrez,fromType ="ENTREZID",toType = "SYMBOL",OrgDb = "org.Hs.eg.db")
     row.names(weightmatrix)<-symbol$SYMBOL
 
