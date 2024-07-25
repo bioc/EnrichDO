@@ -4,13 +4,13 @@
 \alias{TermStruct}
 \title{Enrich_internal}
 \usage{
-TermStruct(result_do)
+TermStruct(resultDO)
 }
 \arguments{
-\item{result_do}{Receives the file output by the wrireResult function, which is used to visually display the enrichment results (without running the enrichment operation again).}
+\item{resultDO}{Receives the file output by the wrireResult function, which is used to visually display the enrichment results (without running the enrichment operation again).}
 }
 \value{
-A \code{enrich} instance.
+A \code{enrich} dataframe.
 }
 \description{
 Internal calculation of enrichment analysis

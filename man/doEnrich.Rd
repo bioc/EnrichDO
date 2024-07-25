@@ -6,14 +6,14 @@
 \usage{
 doEnrich(
   interestGenes,
-  test = "hypergeomTest",
+  test = c("hypergeomTest", "fisherTest", "binomTest", "chisqTest", "logoddTest"),
   method = "BH",
   m = 1,
   maxGsize = 5000,
   minGsize = 5,
   traditional = FALSE,
   delta = 0.01,
-  result_do = NULL,
+  resultDO = NULL,
   penalize = TRUE
 )
 }
@@ -34,12 +34,12 @@ doEnrich(
 
 \item{delta}{Set the threshold of nodes, if the p value of doterm is greater than delta, the nodes are not significant, and these nodes are not weighted.}
 
-\item{result_do}{Receives the file output by the wrireResult function, which is used to visually display the enrichment results (without running the enrichment operation again).}
+\item{resultDO}{Receives the file output by the wrireResult function, which is used to visually display the enrichment results (without running the enrichment operation again).}
 
 \item{penalize}{Logical value, whether to add a penalty to the node.Adding a penalty will look for nodes with more branches.}
 }
 \value{
-A \code{enrich} instance.
+A \code{enrichResult} instance.
 }
 \description{
 given a list of genes, this function combines topological properties of the disease ontology structure for enrichment analysis.
@@ -64,7 +64,7 @@ demo_result3<-doEnrich(demo.data,minGsize=5,maxGsize=500)
 #Draw from wrireResult output files
 #Firstly, read the wrireResult output file,using the following two lines
 data<-read.delim(file.path(system.file("examples", package = "EnrichDO"),"result.txt"))
-doEnrich(result_do = data)
+doEnrich(resultDO = data)
 #then, Use the drawing function you need
 drawGraphViz(enrich)    #Tree diagram
 drawPointGraph(enrich)  #Bubble diagram
