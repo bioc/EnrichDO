@@ -24,7 +24,8 @@ Output enrichment result as text
 \examples{
 demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 sample4<-doEnrich(interestGenes=demo.data)
-writeResult(sample4@enrich,file=file.path(tempdir(),"result.txt"))
+enrich<-EnrichTab(object =sample4,all=TRUE )
+writeResult(enrich=enrich,file=file.path(tempdir(),"result.txt"))
 }
 \author{
 Haixiu Yang

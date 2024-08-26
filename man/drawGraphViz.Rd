@@ -5,7 +5,8 @@
 \title{drawGraphViz}
 \usage{
 drawGraphViz(
-  enrich0 = enrich,
+  EnrichResult = NULL,
+  enrich = NULL,
   n = 10,
   labelfontsize = 14,
   numview = TRUE,
@@ -13,7 +14,9 @@ drawGraphViz(
 )
 }
 \arguments{
-\item{enrich0}{a data frame of the enrichment result}
+\item{EnrichResult}{the EnrichResult object}
+
+\item{enrich}{a data frame of the enrichment result}
 
 \item{n}{the number of most significant nodes}
 
@@ -32,10 +35,10 @@ the enrichment results are shown in a tree diagram
 \examples{
 demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 sample5<-doEnrich(interestGenes=demo.data)
-drawGraphViz(sample5@enrich)
+drawGraphViz(EnrichResult =sample5)
 
 #The p-value and the number of intersections are not visible
-drawGraphViz(sample5@enrich,numview=FALSE,pview=FALSE)
+drawGraphViz(EnrichResult =sample5,numview=FALSE,pview=FALSE)
 }
 \author{
 Haixiu Yang

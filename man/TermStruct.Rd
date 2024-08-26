@@ -10,7 +10,7 @@ TermStruct(resultDO)
 \item{resultDO}{Receives the file output by the wrireResult function, which is used to visually display the enrichment results (without running the enrichment operation again).}
 }
 \value{
-A \code{enrich} dataframe.
+A \code{EnrichResult} instance.
 }
 \description{
 Internal calculation of enrichment analysis

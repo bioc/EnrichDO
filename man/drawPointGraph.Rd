@@ -22,7 +22,8 @@ The enrichment results are shown in a scatter plot
 \examples{
 demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 sample2<-doEnrich(interestGenes=demo.data)
-drawPointGraph(enrich=sample2@enrich,n=10,delta=0.05)
+enrich<-EnrichTab(object =sample2 ,all=TRUE)
+drawPointGraph(enrich=enrich,n=10,delta=0.05)
 }
 \author{
 Haixiu Yang

@@ -38,7 +38,8 @@ The top DOID_n nodes in the enrichment results showed the top gene_n genes with 
 \examples{
 demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 sample6<-doEnrich(interestGenes=demo.data)
-drawHeatmap(interestGenes=demo.data,enrich = sample6@enrich,gene_n = 10)
+enrich<-EnrichTab(object =sample6,all=TRUE)
+drawHeatmap(interestGenes=demo.data,enrich = enrich,gene_n = 10)
 }
 \author{
 Haixiu Yang

@@ -13,7 +13,6 @@ doEnrich(
   minGsize = 5,
   traditional = FALSE,
   delta = 0.01,
-  resultDO = NULL,
   penalize = TRUE
 )
 }
@@ -34,12 +33,10 @@ doEnrich(
 
 \item{delta}{Set the threshold of nodes, if the p value of doterm is greater than delta, the nodes are not significant, and these nodes are not weighted.}
 
-\item{resultDO}{Receives the file output by the wrireResult function, which is used to visually display the enrichment results (without running the enrichment operation again).}
-
 \item{penalize}{Logical value, whether to add a penalty to the node.Adding a penalty will look for nodes with more branches.}
 }
 \value{
-A \code{enrichResult} instance.
+A \code{EnrichResult} instance.
 }
 \description{
 given a list of genes, this function combines topological properties of the disease ontology structure for enrichment analysis.
@@ -50,7 +47,7 @@ demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 demo_result<-doEnrich(interestGenes=demo.data)
 
 #setting the penalty to FALSE, the algorithm can mitigate the extent of reduced nodes' weights
-penalF_demo<-doEnrich(interestGenes=demo.data,penalize = FALSE)
+penalF_demo<-doEnrich(interestGenes=demo.data,penalize=FALSE)
 
 #Statistical models and P-value correction can be set
 demo_result2<-doEnrich(demo.data,test="hypergeomTest",method="holm")
@@ -60,15 +57,6 @@ Tradition_demo<-doEnrich(demo.data,traditional=TRUE)
 
 #Between the number of genes in minGsize and maxGsize doterm enrichment analysis
 demo_result3<-doEnrich(demo.data,minGsize=5,maxGsize=500)
-
-#Draw from wrireResult output files
-#Firstly, read the wrireResult output file,using the following two lines
-data<-read.delim(file.path(system.file("examples", package = "EnrichDO"),"result.txt"))
-doEnrich(resultDO = data)
-#then, Use the drawing function you need
-drawGraphViz(enrich)    #Tree diagram
-drawPointGraph(enrich)  #Bubble diagram
-drawBarGraph(enrich)    #Bar plot
 }
 \author{
 Haixiu Yang
