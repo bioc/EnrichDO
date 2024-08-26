@@ -12,7 +12,8 @@
 #'@examples
 #'demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 #'sample1<-doEnrich(interestGenes=demo.data)
-#'drawBarGraph(enrich=sample1@enrich,n=10,delta=0.05)
+#'enrich<-EnrichTab(object =sample1,all=TRUE )
+#'drawBarGraph(enrich=enrich,n=10,delta=0.05)
 
 drawBarGraph <- function(enrich=enrich,n=10,delta=1e-15) {
   data <- enrich %>%
@@ -47,7 +48,8 @@ drawBarGraph <- function(enrich=enrich,n=10,delta=1e-15) {
 #'@examples
 #'demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 #'sample2<-doEnrich(interestGenes=demo.data)
-#'drawPointGraph(enrich=sample2@enrich,n=10,delta=0.05)
+#'enrich<-EnrichTab(object =sample2 ,all=TRUE)
+#'drawPointGraph(enrich=enrich,n=10,delta=0.05)
 drawPointGraph <- function(enrich=enrich,n=10,delta=1e-15) {
   data <- enrich %>%
     filter(p<=delta) %>%
@@ -103,7 +105,8 @@ writeDoTerms <- function(doterms=doterms,file) {
 #'@examples
 #'demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 #'sample4<-doEnrich(interestGenes=demo.data)
-#'writeResult(sample4@enrich,file=file.path(tempdir(),"result.txt"))
+#'enrich<-EnrichTab(object =sample4,all=TRUE )
+#'writeResult(enrich=enrich,file=file.path(tempdir(),"result.txt"))
 writeResult <- function(enrich=enrich,file,Q=1,P=1) {
   data <- enrich %>%
     mutate(cg=map_chr(cg.arr, str_c, collapse=","))%>%
@@ -116,7 +119,8 @@ writeResult <- function(enrich=enrich,file,Q=1,P=1) {
 }
 #'@title drawGraphViz
 #'@description the enrichment results are shown in a tree diagram
-#'@param enrich0 a data frame of the enrichment result
+#'@param EnrichResult the EnrichResult object
+#'@param enrich a data frame of the enrichment result
 #'@param n the number of most significant nodes
 #'@param labelfontsize the font size of nodes
 #'@param numview Displays the number of intersections between the interest set and each doterm.
@@ -133,16 +137,24 @@ writeResult <- function(enrich=enrich,file,Q=1,P=1) {
 #'@importFrom tidyr unnest
 #'@importFrom grDevices heat.colors
 #'@importFrom RColorBrewer brewer.pal
+#'@importFrom dplyr filter
 #'@export
 #'@examples
 #'demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 #'sample5<-doEnrich(interestGenes=demo.data)
-#'drawGraphViz(sample5@enrich)
+#'drawGraphViz(EnrichResult =sample5)
 #'
 #'#The p-value and the number of intersections are not visible
-#'drawGraphViz(sample5@enrich,numview=FALSE,pview=FALSE)
-drawGraphViz <- function(enrich0=enrich, n=10,labelfontsize=14,numview=TRUE,pview=TRUE) {
+#'drawGraphViz(EnrichResult =sample5,numview=FALSE,pview=FALSE)
+drawGraphViz <- function(EnrichResult=NULL,enrich=NULL, n=10,labelfontsize=14,numview=TRUE,pview=TRUE) {
 
+  if(!is.null(EnrichResult)&is.null(enrich)){
+    enrich0<-EnrichResult@enrich
+  }else if(is.null(EnrichResult)&!is.null(enrich)){
+    enrich0<-enrich
+  }else{
+    warning("please assign EnrichResult or enrich")
+  }
   enrich0 <- enrich0 %>% arrange(p)
   assign("enrich",enrich0,envir = .GlobalEnv)
 
@@ -158,6 +170,14 @@ drawGraphViz <- function(enrich0=enrich, n=10,labelfontsize=14,numview=TRUE,pvie
 
   #Add edge
   data.extends <- enrich0 %>% filter(DOID %in% nodes) %>% select(DOID, DOTerm,p, c(parent.arr),cg.len)
+  if(dim(data.extends)[1]<=length(nodes)){
+    diff_nodes<-setdiff(nodes,data.extends$DOID)
+    diff_doterm<-filter(doterms,DOID%in%diff_nodes)
+    diff_enrich<-diff_doterm%>%select("DOID","DOTerm","parent.arr")%>%
+      mutate(p=1)%>%mutate(cg.len=0)%>%select("DOID","DOTerm","p","parent.arr","cg.len")
+    data.extends<-rbind(data.extends,diff_enrich)
+
+  }
 
   edges <- data.extends %>% unnest(cols=parent.arr)
   pwalk(edges, function(DOID, parent.arr, ...){
@@ -210,17 +230,20 @@ drawGraphViz <- function(enrich0=enrich, n=10,labelfontsize=14,numview=TRUE,pvie
 
   g1layout <- agopen(rEG, name="foo",nodeAttrs = nAttrs,attrs=list(graph=list(rankdir="TB"), node=list(fixedsize=FALSE)),)
   Rgraphviz::plot(g1layout)
-  if(pview==TRUE){
+  if(pview == TRUE){
     for (i in 1:length(g1layout@AgNode)) {
-	pval<-nAttrs[["pvalue"]][[g1layout@AgNode[[i]]@name]]
-	if(pval!=1){pval<-format(pval,digit=5,scientific=TRUE)}
-    text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])),labels=pval,pos=1, col="black",cex = 0.5)
+	    pval<-nAttrs[["pvalue"]][[g1layout@AgNode[[i]]@name]]
+	    if(pval == 1){pval<-""}
+	    if(pval != 1){pval<-format(pval,digit=5,scientific=TRUE)}
+      text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])),labels=pval,pos=1, col="black",cex = 0.5)
+    }
   }
-  }
-  if(numview==TRUE){
+  if(numview == TRUE){
     for (i in 1:length(g1layout@AgNode)) {
-    text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])),labels=nAttrs[["cglen"]][[g1layout@AgNode[[i]]@name]],pos=3, col="dark blue",cex = 0.5)
-  }
+      num<-nAttrs[["cglen"]][[g1layout@AgNode[[i]]@name]]
+      if(num == 0){num<-""}
+      text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])),labels=num,pos=3, col="dark blue",cex = 0.5)
+    }
   }
 
 }
@@ -246,7 +269,8 @@ drawGraphViz <- function(enrich0=enrich, n=10,labelfontsize=14,numview=TRUE,pvie
 #'@examples
 #'demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 #'sample6<-doEnrich(interestGenes=demo.data)
-#'drawHeatmap(interestGenes=demo.data,enrich = sample6@enrich,gene_n = 10)
+#'enrich<-EnrichTab(object =sample6,all=TRUE)
+#'drawHeatmap(interestGenes=demo.data,enrich = enrich,gene_n = 10)
 
 drawHeatmap<-function(interestGenes,enrich=enrich,DOID_n=10,gene_n=50,fontsize_row=10,readable=TRUE,...){
 
@@ -275,9 +299,9 @@ drawHeatmap<-function(interestGenes,enrich=enrich,DOID_n=10,gene_n=50,fontsize_r
     weightMatrix[id,names(gene)]<<-as.numeric(gene)
   })
   weightMatrix[n+1,]<<-colSums(weightMatrix)
-  weightmatrix<-t(weightMatrix[-(n+1),names(sort(weightMatrix[n+1,],decreasing = TRUE)[1:m])])
+  weightmatrix<-t(weightMatrix[-(n+1),names(sort(weightMatrix[n+1,],decreasing=TRUE)[1:m])])
 
-  if(readable==TRUE){
+  if(readable == TRUE){
     #提供基因标签展示为symbol
     entrez<-row.names(weightmatrix)
     message("gene symbol conversion result: ")
@@ -293,7 +317,35 @@ drawHeatmap<-function(interestGenes,enrich=enrich,DOID_n=10,gene_n=50,fontsize_r
   # colors<-colorRampPalette(brewer.pal(9,"YlGnBu")[2:7])(10)
   #colors <- colorRampPalette(c("gray", "yellow", "orange"))(25)
 
-  pheatmap(weightmatrix,border_color = NA, cluster_cols = FALSE,color = colors,angle_col  = 45,fontsize_row = fontsize_row,...)
+  pheatmap(weightmatrix,border_color=NA, cluster_cols=FALSE,color=colors,angle_col=45,fontsize_row=fontsize_row,...)
 
 }
 
+
+#'@title convDraw
+#'@description using the result of writeResult for convenience drawing.
+#'@param resultDO a data frame of enrichment result
+#'@author Haixiu Yang
+#'@return data.frame
+#'@export
+#'@examples
+#'#'#Draw from wrireResult output files
+#'#Firstly, read the wrireResult output file,using the following two lines
+#'data<-read.delim(file.path(system.file("examples", package = "EnrichDO"),"result.txt"))
+#'convDraw(resultDO = data)
+#'#then, Use the drawing function you need
+#'drawGraphViz(enrich=enrich)    #Tree diagram
+#'drawPointGraph(enrich=enrich)  #Bubble diagram
+#'drawBarGraph(enrich=enrich)    #Bar plot
+
+convDraw<-function(resultDO){
+  if (!exists(".EnrichDOenv", envir = .GlobalEnv)) {
+    pos <- 1
+    envir <- as.environment(pos)
+    assign(".EnrichDOenv", new.env(), envir = envir)
+  }#先创建新环境
+  .EnrichDOenv <- get(".EnrichDOenv", envir = .GlobalEnv)
+
+  TermStruct(resultDO=resultDO)
+  message("Now you can use the drawing function")
+}
