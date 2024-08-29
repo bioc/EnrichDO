@@ -54,7 +54,7 @@ Disease Ontology (DO) enrichment analysis is an effective means to discover the 
 
 EnrichDO encompasses a variety of statistical models and visualization schemes for discovering the disease-gene relationships under biological big data. Currently uploaded to Bioconductor, we anticipate that our R package will provide a more convenient and effective DO enrichment tool.
 
-```{r setup,results='hide'}
+```{r setup}
 library(EnrichDO)
 ```
 
@@ -70,51 +70,20 @@ In EnrichDO, we implemented ***doEnrich*** to realize the enrichment analysis of
 
 In the following example, several genes (*demo.data*) are randomly selected from the protein-coding genes for analysis. The parameters of ***doEnrich*** is default.
 
-```{r label=init,eval=TRUE,echo=TRUE,collapse=FALSE,results='hide',cache=TRUE}
+```{r label=init,eval = TRUE,echo = TRUE,collapse = FALSE,cache = TRUE}
 demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 demo_result<-doEnrich(interestGenes=demo.data)
-
-# 		 -- Descending rights test-- 
-# 
-# LEVEL: 13	1 nodes	72 genes to be scored
-# LEVEL: 12	2 nodes	457 genes to be scored
-# LEVEL: 11	3 nodes	907 genes to be scored
-# LEVEL: 10	13 nodes	2279 genes to be scored
-# LEVEL: 9	54 nodes	6504 genes to be scored
-# LEVEL: 8	130 nodes	9483 genes to be scored
-# LEVEL: 7	198 nodes	11209 genes to be scored
-# LEVEL: 6	220 nodes	12574 genes to be scored
-# LEVEL: 5	198 nodes	12936 genes to be scored
-# LEVEL: 4	103 nodes	12824 genes to be scored
-# LEVEL: 3	30 nodes	11683 genes to be scored
-# LEVEL: 2	5 nodes	8032 genes to be scored
-# LEVEL: 1	0 nodes	0 genes to be scored
-
-demo_result
-
-# ------------------EnrichResult object-------------------------
-# 
-# Method of enrichment:
-# 	 Global Weighted Model
-# 	 'hypergeomTest' Statistical model with the 'BH' Multiple hypothesis correction
-# Enrichment cutoff layer: 1
-# interestGenes number: 13
-# 957 DOTerms scored: 231 terms with p < 0.01
-# Parameter setting:
-# 	 Enrichment cutoff layer: 1
-# 	 Doterm gene number limit: minGsize 5, maxGsize 5000
-# 	 Enrichment threshold: 0.01
-
+show(demo_result)
 ```
 
-From the above output results, we can observe the nodes and total genes involved in each layer of DAG structure, as well as the summary of *demo_result*.
+Running ***doEnrich*** will output the nodes and total genes involved in each layer of DAG structure to the user. The ***show*** method can be used to present the overall result to the user.
 
 The result of ***doEnrich*** is *demo_result* which contains *enrich, interestGenes, test, method, m, maxGsize, minGsize, delta, traditional, penalize*. Use the ***EnrichTab*** function to obtain the *enrich* result in *demo_result*. Note that the complete *enrich* result is stored in *demo_result*, and ***EnrichTab*** can extract result.
 
 ***EnrichTab*** takes two parameters, where *object* receives the *EnrichResult* object produced by doEnrich, and *all* is a logical value, TRUE to extract all enrich results and FALSE to extract only significant results.
 
-```{r eval=TRUE}
-Enrich<-EnrichTab(object=demo_result,all=TRUE)
+```{r eval = TRUE}
+Enrich<-EnrichTab(object=demo_result,all = TRUE)
 ```
 
 There are 16 columns of *Enrich*, including:
@@ -145,7 +114,7 @@ Generally, a significant P value of the enrichment results was less than 0.05 or
 
 The data frame *doterms* contains the information of the disease ontology for DAG construction.
 
-```{r eval=TRUE}
+```{r eval = TRUE}
 head(doterms)
 ```
 
@@ -161,26 +130,26 @@ weighted_demo<-doEnrich(interestGenes=demo.data,
                            minGsize=10,
                            maxGsize=2000,
                            delta=0.05,
-                           penalize=TRUE)
+                           penalize = TRUE)
 ```
 
 2.The parameter penalize was used to alleviate the impact of different magnitudes of p-values, default value is TRUE. When set to false, the degree of reduction in weight for non-significant nodes is decreased, resulting in a slight increase in significance for these nodes, i.e., their p-value will be reduced.
 
 ```{r }
-penalF_demo<-doEnrich(interestGenes=demo.data, penalize=FALSE)
+penalF_demo<-doEnrich(interestGenes=demo.data, penalize = FALSE)
 ```
 
 3.Using the traditional enrichment analysis method, it doesn't reduce weights according to the DAG structure. Parameters *test, method, m, maxGsize* and *minGsize* can be used flexibly.
 
 ```{r }
-Tradition_demo<-doEnrich(demo.data , traditional=TRUE)
+Tradition_demo<-doEnrich(demo.data , traditional = TRUE)
 ```
 
 ## writeDoTerms function
 
 ***writeDoTerms*** can output *DOID, DOTerm, level, genes, parents, children, gene.len, parent.len* and *child.len* in the data frame *doterms* as text. The default file name is "doterms.txt".
 
-```{r eval=TRUE}
+```{r eval = TRUE}
 writeDoTerms(doterms,file=file.path(tempdir(),"doterms.txt"))
 ```
 
@@ -192,7 +161,7 @@ The ***writeResult*** function can output *DOID, DOTerm, p, p.adjust, geneRatio,
 
 ***writeResult*** has four parameters. *Enrich* indicates the significant enrichment result of ***doEnrich***, *file* indicates the write address of a file. The parameter *Q* (and *P*) indicates that doterm is output only when *p.adjust* (and *p* value) is less than or equal to *Q* (and *P*). The default values for *P* and *Q* are 1.
 
-```{r eval=TRUE}
+```{r eval = TRUE}
 writeResult(Enrich,file=file.path(tempdir(),"result.txt"),Q=1,P=1)
 ```
 
@@ -224,7 +193,7 @@ In addition, the ***drawGraphViz*** function can also display the P-value of eac
 
 ```{r fig.cap="tree plot",fig.align='center',fig.width=7,fig.height=5}
 
-drawGraphViz(demo_result, n=10, numview=FALSE, pview=FALSE,labelfontsize=17)
+drawGraphViz(demo_result, n=10, numview = FALSE, pview = FALSE,labelfontsize=17)
 
 ```
 
@@ -241,7 +210,7 @@ drawHeatmap(interestGenes=demo.data,
             enrich=Enrich,
             gene_n=10,
             fontsize_row=8,
-            readable=TRUE)
+            readable = TRUE)
 ```
 
 ## convenient drawing
@@ -261,6 +230,6 @@ drawBarGraph(enrich=enrich,delta = 0.05)    #Bar plot
 
 # Session information
 
-```{r session-info,cache = F,echo=T,message=T,warning=FALSE}
+```{r session-info,cache = FALSE,echo = TRUE,message = TRUE,warning = FALSE}
 sessionInfo()
 ```
