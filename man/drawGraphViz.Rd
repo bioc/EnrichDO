@@ -38,7 +38,7 @@ sample5<-doEnrich(interestGenes=demo.data)
 drawGraphViz(EnrichResult =sample5)
 
 #The p-value and the number of intersections are not visible
-drawGraphViz(EnrichResult =sample5,numview=FALSE,pview=FALSE)
+drawGraphViz(EnrichResult =sample5,numview = FALSE,pview = FALSE)
 }
 \author{
 Haixiu Yang
