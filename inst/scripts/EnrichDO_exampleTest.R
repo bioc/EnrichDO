@@ -26,7 +26,7 @@ Alzheimer_EnrichDO<-doEnrich(interestGenes = Alzheimer_gene,
                      traditional  = FALSE,
                      delta        = 0.01,
                      penalize     = T)
-enrich<-EnrichTab(object=Alzheimer_EnrichDO,all=TRUE)
+enrich<-EnrichTab(object=Alzheimer_EnrichDO,all = TRUE)
 #Enrichment result visualization
 writeDoTerms(doterms,file = file.path(system.file("examples", package = "EnrichDO"),"doterms.txt"))
 writeResult(enrich,file = file.path(system.file("examples", package = "EnrichDO"),"result.txt"),Q=1,P=1)
@@ -40,7 +40,7 @@ drawPointGraph(enrich=enrich,n=10,delta = 0.05)
 dev.off()
 
 pdf(file.path(system.file("examples", package = "EnrichDO"),"TreeGraph.pdf"))
-drawGraphViz(EnrichResult=Alzheimer_EnrichDO, n=10, numview=FALSE, pview=FALSE,labelfontsize = 17)
+drawGraphViz(EnrichResult=Alzheimer_EnrichDO, n=10, numview = FALSE, pview = FALSE,labelfontsize = 17)
 dev.off()
 
 pdf(file.path(system.file("examples", package = "EnrichDO"),"HeatmapGraph.pdf"))
