@@ -182,15 +182,15 @@ Test<-function(test,interestGenes, genes, weights){
 #fisher检验函数
 fisherTest <- function(wa,wb,wc,wd) {
 
-  tableR<-matrix(c(wa,wb,wc,wd),nrow = 2,ncol = 2,byrow=TRUE)
+  tableR<-matrix(c(wa,wb,wc,wd),nrow = 2,ncol = 2,byrow = TRUE)
   p<-fisher.test(tableR, alternative = 'greater')$p.value
   return(p)
 }
 ###超几何分布
 hypergeomTest<-function(wa,wb,wc,wd){
 
-  tableR<-matrix(c(wa,wb,wc,wd),nrow = 2,ncol = 2,byrow=TRUE)
-  p<-phyper(wa-1,wa+wb,wc+wd,wa+wc,lower.tail=FALSE)
+  tableR<-matrix(c(wa,wb,wc,wd),nrow = 2,ncol = 2,byrow = TRUE)
+  p<-phyper(wa-1,wa+wb,wc+wd,wa+wc,lower.tail = FALSE)
   return(p)
 }
 ###二项分布
@@ -199,14 +199,14 @@ binomTest<-function(wa,wb,wc){
   q<-wa-1
   size<-wa+wc
   prob<-(wa+wb)/length(dotermgenes)
-  p<-pbinom(q, size, prob, lower.tail=FALSE, log.p=FALSE)
+  p<-pbinom(q, size, prob, lower.tail = FALSE, log.p = FALSE)
   ###q为成功的次数，size为试验次数，prob为单次试验成功的概率
   return(p)
 }
 ###卡方分布
 chisqTest<-function(wa,wb,wc,wd){
 
-  tableR<-matrix(c(wa,wb,wc,wd),nrow = 2,ncol = 2,byrow=TRUE)
+  tableR<-matrix(c(wa,wb,wc,wd),nrow = 2,ncol = 2,byrow = TRUE)
   p<-chisq.test(tableR)
   p<-p[["p.value"]]
   ###a,b,c,d四格表参数
@@ -225,7 +225,7 @@ logoddTest<-function(wa,wb,wc,wd){
   return(pval)
 }
 #获取祖先节点
-getAncestors <- function(DOID, trace=FALSE) {
+getAncestors <- function(DOID, trace = FALSE) {
   doterms<-get("doterms",envir = .EnrichDOenv)
   ancestors <- c()
   if(DOID=='DOID:4') return(ancestors) #root节点直接返回

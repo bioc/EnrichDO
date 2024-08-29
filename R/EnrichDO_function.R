@@ -24,13 +24,13 @@
 #'demo_result<-doEnrich(interestGenes=demo.data)
 #'
 #'#setting the penalty to FALSE, the algorithm can mitigate the extent of reduced nodes' weights
-#'penalF_demo<-doEnrich(interestGenes=demo.data,penalize=FALSE)
+#'penalF_demo<-doEnrich(interestGenes=demo.data,penalize = FALSE)
 #'
 #'#Statistical models and P-value correction can be set
 #'demo_result2<-doEnrich(demo.data,test="hypergeomTest",method="holm")
 #'
 #'#Using the traditional enrichment analysis method.
-#'Tradition_demo<-doEnrich(demo.data,traditional=TRUE)
+#'Tradition_demo<-doEnrich(demo.data,traditional = TRUE)
 #'
 #'#Between the number of genes in minGsize and maxGsize doterm enrichment analysis
 #'demo_result3<-doEnrich(demo.data,minGsize=5,maxGsize=500)
@@ -38,8 +38,8 @@
 
 
 #主要函数
-doEnrich <- function(interestGenes,test=c("hypergeomTest", "fisherTest","binomTest","chisqTest","logoddTest" ),method="BH",m=1,maxGsize=5000,minGsize=5,traditional=FALSE,delta=0.01,penalize=TRUE) {
-  test <- match.arg(test,several.ok=FALSE)
+doEnrich <- function(interestGenes,test=c("hypergeomTest", "fisherTest","binomTest","chisqTest","logoddTest" ),method="BH",m=1,maxGsize=5000,minGsize=5,traditional = FALSE,delta=0.01,penalize = TRUE) {
+  test <- match.arg(test,several.ok = FALSE)
   #初始化
   init(traditional)
   interestGenes<-intersect(interestGenes,dotermgenes)

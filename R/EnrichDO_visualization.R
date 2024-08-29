@@ -12,7 +12,7 @@
 #'@examples
 #'demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 #'sample1<-doEnrich(interestGenes=demo.data)
-#'enrich<-EnrichTab(object =sample1,all=TRUE )
+#'enrich<-EnrichTab(object =sample1,all = TRUE )
 #'drawBarGraph(enrich=enrich,n=10,delta=0.05)
 
 drawBarGraph <- function(enrich=enrich,n=10,delta=1e-15) {
@@ -48,7 +48,7 @@ drawBarGraph <- function(enrich=enrich,n=10,delta=1e-15) {
 #'@examples
 #'demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 #'sample2<-doEnrich(interestGenes=demo.data)
-#'enrich<-EnrichTab(object =sample2 ,all=TRUE)
+#'enrich<-EnrichTab(object =sample2 ,all = TRUE)
 #'drawPointGraph(enrich=enrich,n=10,delta=0.05)
 drawPointGraph <- function(enrich=enrich,n=10,delta=1e-15) {
   data <- enrich %>%
@@ -105,7 +105,7 @@ writeDoTerms <- function(doterms=doterms,file) {
 #'@examples
 #'demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 #'sample4<-doEnrich(interestGenes=demo.data)
-#'enrich<-EnrichTab(object =sample4,all=TRUE )
+#'enrich<-EnrichTab(object =sample4,all = TRUE )
 #'writeResult(enrich=enrich,file=file.path(tempdir(),"result.txt"))
 writeResult <- function(enrich=enrich,file,Q=1,P=1) {
   data <- enrich %>%
@@ -145,8 +145,8 @@ writeResult <- function(enrich=enrich,file,Q=1,P=1) {
 #'drawGraphViz(EnrichResult =sample5)
 #'
 #'#The p-value and the number of intersections are not visible
-#'drawGraphViz(EnrichResult =sample5,numview=FALSE,pview=FALSE)
-drawGraphViz <- function(EnrichResult=NULL,enrich=NULL, n=10,labelfontsize=14,numview=TRUE,pview=TRUE) {
+#'drawGraphViz(EnrichResult =sample5,numview = FALSE,pview = FALSE)
+drawGraphViz <- function(EnrichResult=NULL,enrich=NULL, n=10,labelfontsize=14,numview = TRUE,pview = TRUE) {
 
   if(!is.null(EnrichResult)&is.null(enrich)){
     enrich0<-EnrichResult@enrich
@@ -162,7 +162,7 @@ drawGraphViz <- function(EnrichResult=NULL,enrich=NULL, n=10,labelfontsize=14,nu
   nodes <- c()
   walk(data$DOID, function(DOID) {
     nodes <<- append(nodes, DOID)
-    ancestors <- getAncestors(DOID, trace=TRUE)
+    ancestors <- getAncestors(DOID, trace = TRUE)
     nodes <<- append(nodes, ancestors)
   })
   nodes <- unique(nodes)
@@ -228,13 +228,13 @@ drawGraphViz <- function(EnrichResult=NULL,enrich=NULL, n=10,labelfontsize=14,nu
   names(shapes) <- nodes(rEG)
   nAttrs$shape <- shapes
 
-  g1layout <- agopen(rEG, name="foo",nodeAttrs = nAttrs,attrs=list(graph=list(rankdir="TB"), node=list(fixedsize=FALSE)),)
+  g1layout <- agopen(rEG, name="foo",nodeAttrs = nAttrs,attrs=list(graph=list(rankdir="TB"), node=list(fixedsize = FALSE)),)
   Rgraphviz::plot(g1layout)
   if(pview == TRUE){
     for (i in 1:length(g1layout@AgNode)) {
 	    pval<-nAttrs[["pvalue"]][[g1layout@AgNode[[i]]@name]]
 	    if(pval == 1){pval<-""}
-	    if(pval != 1){pval<-format(pval,digit=5,scientific=TRUE)}
+	    if(pval != 1){pval<-format(pval,digit=5,scientific = TRUE)}
       text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])),labels=pval,pos=1, col="black",cex = 0.5)
     }
   }
@@ -269,10 +269,10 @@ drawGraphViz <- function(EnrichResult=NULL,enrich=NULL, n=10,labelfontsize=14,nu
 #'@examples
 #'demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 #'sample6<-doEnrich(interestGenes=demo.data)
-#'enrich<-EnrichTab(object =sample6,all=TRUE)
+#'enrich<-EnrichTab(object =sample6,all = TRUE)
 #'drawHeatmap(interestGenes=demo.data,enrich = enrich,gene_n = 10)
 
-drawHeatmap<-function(interestGenes,enrich=enrich,DOID_n=10,gene_n=50,fontsize_row=10,readable=TRUE,...){
+drawHeatmap<-function(interestGenes,enrich=enrich,DOID_n=10,gene_n=50,fontsize_row=10,readable = TRUE,...){
 
   n<-DOID_n
   m<-gene_n
@@ -299,7 +299,7 @@ drawHeatmap<-function(interestGenes,enrich=enrich,DOID_n=10,gene_n=50,fontsize_r
     weightMatrix[id,names(gene)]<<-as.numeric(gene)
   })
   weightMatrix[n+1,]<<-colSums(weightMatrix)
-  weightmatrix<-t(weightMatrix[-(n+1),names(sort(weightMatrix[n+1,],decreasing=TRUE)[1:m])])
+  weightmatrix<-t(weightMatrix[-(n+1),names(sort(weightMatrix[n+1,],decreasing = TRUE)[1:m])])
 
   if(readable == TRUE){
     #提供基因标签展示为symbol
@@ -317,7 +317,7 @@ drawHeatmap<-function(interestGenes,enrich=enrich,DOID_n=10,gene_n=50,fontsize_r
   # colors<-colorRampPalette(brewer.pal(9,"YlGnBu")[2:7])(10)
   #colors <- colorRampPalette(c("gray", "yellow", "orange"))(25)
 
-  pheatmap(weightmatrix,border_color=NA, cluster_cols=FALSE,color=colors,angle_col=45,fontsize_row=fontsize_row,...)
+  pheatmap(weightmatrix,border_color=NA, cluster_cols = FALSE,color=colors,angle_col=45,fontsize_row=fontsize_row,...)
 
 }
 

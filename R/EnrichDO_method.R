@@ -14,7 +14,7 @@ setGeneric("EnrichTab", function(object,all) standardGeneric("EnrichTab"))
 ##' @exportMethod EnrichTab
 ##' @author Haixiu Yang
 setMethod("EnrichTab", signature(object="EnrichResult"),
-          function(object,all=TRUE) {
+          function(object,all = TRUE) {
             enrich<-object@enrich
             if(all == FALSE){
               enrich<-dplyr::filter(enrich,p<object@delta)
