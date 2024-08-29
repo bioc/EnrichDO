@@ -5,7 +5,7 @@ test_that("drawGraphViz", {
   res <- sapply(c(0.01,0.02,0.03,0.04), function(delta){
 
     aa<-doEnrich(interestGenes=demo.data, delta=delta) ;
-    result<-EnrichTab(object=aa,all=FALSE);
+    result<-EnrichTab(object=aa,all = FALSE);
     record<-1
     record<-tryCatch({
       drawGraphViz(enrich = result,n = 5)
