@@ -54,7 +54,7 @@ Disease Ontology (DO) enrichment analysis is an effective means to discover the 
 
 EnrichDO encompasses a variety of statistical models and visualization schemes for discovering the disease-gene relationships under biological big data. Currently uploaded to Bioconductor, we anticipate that our R package will provide a more convenient and effective DO enrichment tool.
 
-```{r setup}
+```{r setup,results='hide'}
 library(EnrichDO)
 ```
 
@@ -70,7 +70,7 @@ In EnrichDO, we implemented ***doEnrich*** to realize the enrichment analysis of
 
 In the following example, several genes (*demo.data*) are randomly selected from the protein-coding genes for analysis. The parameters of ***doEnrich*** is default.
 
-```{r label=init,eval = TRUE,echo = TRUE,collapse = FALSE,cache = TRUE}
+```{r label=init,eval=TRUE,echo=TRUE,collapse=FALSE,cache=TRUE}
 demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
 demo_result<-doEnrich(interestGenes=demo.data)
 show(demo_result)
@@ -78,15 +78,8 @@ show(demo_result)
 
 Running ***doEnrich*** will output the nodes and total genes involved in each layer of DAG structure to the user. The ***show*** method can be used to present the overall result to the user.
 
-The result of ***doEnrich*** is *demo_result* which contains *enrich, interestGenes, test, method, m, maxGsize, minGsize, delta, traditional, penalize*. Use the ***EnrichTab*** function to obtain the *enrich* result in *demo_result*. Note that the complete *enrich* result is stored in *demo_result*, and ***EnrichTab*** can extract result.
-
-***EnrichTab*** takes two parameters, where *object* receives the *EnrichResult* object produced by doEnrich, and *all* is a logical value, TRUE to extract all enrich results and FALSE to extract only significant results.
-
-```{r eval = TRUE}
-Enrich<-EnrichTab(object=demo_result,all = TRUE)
-```
-
-There are 16 columns of *Enrich*, including:
+The result of ***doEnrich*** is *demo_result* which contains *enrich, interestGenes, test, method, m, maxGsize, minGsize, delta, traditional, penalize*. 
+There are 16 columns of *enrich*, including:
 
 -   The standard ID corresponding to the disease in the Disease Ontology database (*DOID*).
 
@@ -112,10 +105,11 @@ There are 16 columns of *Enrich*, including:
 
 Generally, a significant P value of the enrichment results was less than 0.05 or 0.01, and it was regarded that there was a significant association between the gene set of interest and the disease node. In the *Enrich*, the node with the most significant enrichment is DOID:0080832, and the DOTerm is mild cognitive impairment, with its P-value being 9.22e-16. These results suggested that there was statistical significance between the gene set of interest and mild cognitive impairment.
 
-The data frame *doterms* contains the information of the disease ontology for DAG construction.
+The data frame *doterms* contains the information of the disease ontology for DAG construction. You can use showDoTerms to see the details.
 
-```{r eval = TRUE}
+```{r eval=TRUE}
 head(doterms)
+showDoTerms(doterms)
 ```
 
 ### Application cases of doEnrich function
@@ -130,27 +124,27 @@ weighted_demo<-doEnrich(interestGenes=demo.data,
                            minGsize=10,
                            maxGsize=2000,
                            delta=0.05,
-                           penalize = TRUE)
+                           penalize=TRUE)
 ```
 
 2.The parameter penalize was used to alleviate the impact of different magnitudes of p-values, default value is TRUE. When set to false, the degree of reduction in weight for non-significant nodes is decreased, resulting in a slight increase in significance for these nodes, i.e., their p-value will be reduced.
 
 ```{r }
-penalF_demo<-doEnrich(interestGenes=demo.data, penalize = FALSE)
+penalF_demo<-doEnrich(interestGenes=demo.data, penalize=FALSE)
 ```
 
 3.Using the traditional enrichment analysis method, it doesn't reduce weights according to the DAG structure. Parameters *test, method, m, maxGsize* and *minGsize* can be used flexibly.
 
 ```{r }
-Tradition_demo<-doEnrich(demo.data , traditional = TRUE)
+Tradition_demo<-doEnrich(demo.data, traditional=TRUE)
 ```
 
 ## writeDoTerms function
 
 ***writeDoTerms*** can output *DOID, DOTerm, level, genes, parents, children, gene.len, parent.len* and *child.len* in the data frame *doterms* as text. The default file name is "doterms.txt".
 
-```{r eval = TRUE}
-writeDoTerms(doterms,file=file.path(tempdir(),"doterms.txt"))
+```{r eval=TRUE}
+writeDoTerms(doterms,file=file.path(tempdir(), "doterms.txt"))
 ```
 
 ## writeResult function
@@ -161,8 +155,8 @@ The ***writeResult*** function can output *DOID, DOTerm, p, p.adjust, geneRatio,
 
 ***writeResult*** has four parameters. *Enrich* indicates the significant enrichment result of ***doEnrich***, *file* indicates the write address of a file. The parameter *Q* (and *P*) indicates that doterm is output only when *p.adjust* (and *p* value) is less than or equal to *Q* (and *P*). The default values for *P* and *Q* are 1.
 
-```{r eval = TRUE}
-writeResult(Enrich,file=file.path(tempdir(),"result.txt"),Q=1,P=1)
+```{r eval=TRUE}
+writeResult(demo_result,file=file.path(tempdir(), "result.txt"), Q=1, P=1)
 ```
 
 # Visualization of enrichment results
@@ -174,7 +168,7 @@ EnrichDO provides four methods to visualize enrichment results, including bar pl
 ***drawBarGraph*** can draw the top *n* nodes with the most significant p-value as bar chart, and the node's p-value is less than *delta* (By default, *n* is 10 and *delta* is 1e-15).
 
 ```{r fig.cap="bar plot",fig.align='center',fig.width=7,fig.height=5}
-drawBarGraph(Enrich,n=10,delta=0.05)
+drawBarGraph(EnrichResult=demo_result, n=10, delta=0.05)
 ```
 
 ## drawPointGraph function
@@ -182,7 +176,7 @@ drawBarGraph(Enrich,n=10,delta=0.05)
 ***drawPointGraph*** can draw the top *n* nodes with the most significant p-value as bubble plot, and the node's p-value is less than *delta* (By default, *n* is 10 and *delta* is 1e-15).
 
 ```{r fig.cap="point plot",fig.align='center',fig.width=7,fig.height=5}
-drawPointGraph(Enrich,n=10,delta=0.05)
+drawPointGraph(EnrichResult=demo_result, n=10, delta=0.05)
 ```
 
 ## drawGraphViz function
@@ -193,7 +187,7 @@ In addition, the ***drawGraphViz*** function can also display the P-value of eac
 
 ```{r fig.cap="tree plot",fig.align='center',fig.width=7,fig.height=5}
 
-drawGraphViz(demo_result, n=10, numview = FALSE, pview = FALSE,labelfontsize=17)
+drawGraphViz(EnrichResult=demo_result, n=10, numview=FALSE, pview=FALSE, labelfontsize=17)
 
 ```
 
@@ -207,10 +201,10 @@ Meanwhile, the *weightMatrix* variable is also written in the environment to sto
 
 ```{r fig.cap="heatmap",fig.align='center',fig.width=7,fig.height=5}
 drawHeatmap(interestGenes=demo.data,
-            enrich=Enrich,
+            EnrichResult=demo_result,
             gene_n=10,
             fontsize_row=8,
-            readable = TRUE)
+            readable=TRUE)
 ```
 
 ## convenient drawing
@@ -219,17 +213,17 @@ Draw(***drawBarGraph ,drawPointGraph ,drawGraphViz***) from ***writeResult*** ou
 
 ```{r }
 #Firstly, read the wrireResult output file,using the following two lines
-data<-read.delim(file.path(system.file("examples", package="EnrichDO"),"result.txt"))
+data<-read.delim(file.path(system.file("examples", package="EnrichDO"), "result.txt"))
 convDraw(resultDO=data)
 
 #then, Use the drawing function you need
 drawGraphViz(enrich=enrich)    #Tree diagram
-drawPointGraph(enrich=enrich,delta = 0.05)  #Bubble diagram
-drawBarGraph(enrich=enrich,delta = 0.05)    #Bar plot
+drawPointGraph(enrich=enrich, delta = 0.05)  #Bubble diagram
+drawBarGraph(enrich=enrich, delta = 0.05)    #Bar plot
 ```
 
 # Session information
 
-```{r session-info,cache = FALSE,echo = TRUE,message = TRUE,warning = FALSE}
+```{r session-info,cache = F,echo=T,message=T,warning=FALSE}
 sessionInfo()
 ```
