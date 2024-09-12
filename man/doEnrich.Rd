@@ -7,21 +7,22 @@
 doEnrich(
   interestGenes,
   test = c("hypergeomTest", "fisherTest", "binomTest", "chisqTest", "logoddTest"),
-  method = "BH",
+  method = c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"),
   m = 1,
   maxGsize = 5000,
   minGsize = 5,
   traditional = FALSE,
   delta = 0.01,
-  penalize = TRUE
+  penalize = TRUE,
+  allDOTerms = FALSE
 )
 }
 \arguments{
 \item{interestGenes}{a vector of gene IDs.}
 
-\item{test}{One of "fisherTest","hypergeomTest","binomTest","chisqTest" and "logoddTest" statistical model. Default is hypergeomTest.}
+\item{test}{One of 'fisherTest','hypergeomTest','binomTest','chisqTest' and 'logoddTest' statistical model. Default is hypergeomTest.}
 
-\item{method}{One of "holm", "hochberg", "hommel", "bonferroni", "BH", "BY","fdr" and "none",for P value correction.}
+\item{method}{One of 'holm', 'hochberg', 'hommel', 'bonferroni', 'BH', 'BY','fdr' and 'none',for P value correction.}
 
 \item{m}{Set the maximum number of ancestor layers for ontology enrichment. Default is layer 1.}
 
@@ -34,6 +35,8 @@ doEnrich(
 \item{delta}{Set the threshold of nodes, if the p value of doterm is greater than delta, the nodes are not significant, and these nodes are not weighted.}
 
 \item{penalize}{Logical value, whether to add a penalty to the node.Adding a penalty will look for nodes with more branches.}
+
+\item{allDOTerms}{Logical value, whether to store all doterms in EnrichResult, defaults is FALSE (only significant nodes are retained).}
 }
 \value{
 A \code{EnrichResult} instance.
@@ -43,20 +46,20 @@ given a list of genes, this function combines topological properties of the dise
 }
 \examples{
 #The enrichment results were obtained by using demo.data
-demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-demo_result<-doEnrich(interestGenes=demo.data)
+demo.data <- c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
+demo_result <- doEnrich(interestGenes=demo.data)
 
 #setting the penalty to FALSE, the algorithm can mitigate the extent of reduced nodes' weights
-penalF_demo<-doEnrich(interestGenes=demo.data,penalize = FALSE)
+penalF_demo <- doEnrich(interestGenes=demo.data, penalize = FALSE)
 
 #Statistical models and P-value correction can be set
-demo_result2<-doEnrich(demo.data,test="hypergeomTest",method="holm")
+demo_result2 <- doEnrich(demo.data, test='hypergeomTest', method='holm')
 
 #Using the traditional enrichment analysis method.
-Tradition_demo<-doEnrich(demo.data,traditional = TRUE)
+Tradition_demo <- doEnrich(demo.data, traditional = TRUE)
 
 #Between the number of genes in minGsize and maxGsize doterm enrichment analysis
-demo_result3<-doEnrich(demo.data,minGsize=5,maxGsize=500)
+demo_result3 <- doEnrich(demo.data, minGsize=5, maxGsize=500)
 }
 \author{
 Haixiu Yang

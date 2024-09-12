@@ -6,7 +6,7 @@
 \usage{
 drawHeatmap(
   interestGenes,
-  enrich = enrich,
+  EnrichResult = NULL,
   DOID_n = 10,
   gene_n = 50,
   fontsize_row = 10,
@@ -17,7 +17,7 @@ drawHeatmap(
 \arguments{
 \item{interestGenes}{A collection of interest genes in vector form}
 
-\item{enrich}{a data frame of the enrichment result}
+\item{EnrichResult}{the EnrichResult object}
 
 \item{DOID_n}{There are DOID_n nodes with the highest significance in the enrichment results.}
 
@@ -36,10 +36,9 @@ heat map
 The top DOID_n nodes in the enrichment results showed the top gene_n genes with the highest weight sum.
 }
 \examples{
-demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-sample6<-doEnrich(interestGenes=demo.data)
-enrich<-EnrichTab(object =sample6,all = TRUE)
-drawHeatmap(interestGenes=demo.data,enrich = enrich,gene_n = 10)
+demo.data <- c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
+sample6 <- doEnrich(interestGenes=demo.data)
+drawHeatmap(interestGenes=demo.data, EnrichResult = sample6, gene_n = 10)
 }
 \author{
 Haixiu Yang

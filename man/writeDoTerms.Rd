@@ -18,9 +18,7 @@ text
 Output DOterms as text
 }
 \examples{
-demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-sample3<-doEnrich(interestGenes=demo.data)
-writeDoTerms(doterms,file=file.path(tempdir(),"doterms.txt"))
+writeDoTerms(doterms, file=file.path(tempdir(), 'doterms.txt'))
 }
 \author{
 Haixiu Yang

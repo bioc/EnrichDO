@@ -4,9 +4,11 @@
 \alias{drawBarGraph}
 \title{drawBarGraph}
 \usage{
-drawBarGraph(enrich = enrich, n = 10, delta = 1e-15)
+drawBarGraph(EnrichResult = NULL, enrich = NULL, n = 10, delta = 1e-15)
 }
 \arguments{
+\item{EnrichResult}{the EnrichResult object}
+
 \item{enrich}{a data frame of enrichment result}
 
 \item{n}{number of bars}
@@ -20,10 +22,9 @@ bar graph
 The enrichment results are shown in a bar chart
 }
 \examples{
-demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-sample1<-doEnrich(interestGenes=demo.data)
-enrich<-EnrichTab(object =sample1,all = TRUE )
-drawBarGraph(enrich=enrich,n=10,delta=0.05)
+demo.data <- c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
+sample1 <- doEnrich(interestGenes=demo.data)
+drawBarGraph(EnrichResult=sample1, n=10, delta=0.05)
 }
 \author{
 Haixiu Yang

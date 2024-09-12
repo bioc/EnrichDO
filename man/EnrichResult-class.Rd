@@ -3,10 +3,10 @@
 \docType{class}
 \name{EnrichResult-class}
 \alias{EnrichResult-class}
-\title{Class "EnrichResult"
+\title{Class 'EnrichResult'
 This class represents the result of enrich analysis}
 \description{
-Class "EnrichResult"
+Class 'EnrichResult'
 This class represents the result of enrich analysis
 }
 \section{Slots}{

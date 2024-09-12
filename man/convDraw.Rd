@@ -10,7 +10,7 @@ convDraw(resultDO)
 \item{resultDO}{a data frame of enrichment result}
 }
 \value{
-data.frame
+DataFrame
 }
 \description{
 using the result of writeResult for convenience drawing.
@@ -18,7 +18,7 @@ using the result of writeResult for convenience drawing.
 \examples{
 #'#Draw from wrireResult output files
 #Firstly, read the wrireResult output file,using the following two lines
-data<-read.delim(file.path(system.file("examples", package = "EnrichDO"),"result.txt"))
+data <- read.delim(file.path(system.file('examples', package = 'EnrichDO'), 'result.txt'))
 convDraw(resultDO = data)
 #then, Use the drawing function you need
 drawGraphViz(enrich=enrich)    #Tree diagram

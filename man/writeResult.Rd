@@ -4,10 +4,10 @@
 \alias{writeResult}
 \title{writeResult}
 \usage{
-writeResult(enrich = enrich, file, Q = 1, P = 1)
+writeResult(EnrichResult = NULL, file, Q = 1, P = 1)
 }
 \arguments{
-\item{enrich}{a data frame of the enrichment result.}
+\item{EnrichResult}{the EnrichResult object}
 
 \item{file}{the address and name of the output file.}
 
@@ -22,10 +22,9 @@ text
 Output enrichment result as text
 }
 \examples{
-demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-sample4<-doEnrich(interestGenes=demo.data)
-enrich<-EnrichTab(object =sample4,all = TRUE )
-writeResult(enrich=enrich,file=file.path(tempdir(),"result.txt"))
+demo.data <- c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
+sample4 <- doEnrich(interestGenes=demo.data)
+writeResult(EnrichResult=sample4, file=file.path(tempdir(), 'result.txt'))
 }
 \author{
 Haixiu Yang
