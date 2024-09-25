@@ -31,4 +31,6 @@ The **input data case** is stored at inst/extdata/Alzheimer_curated.csv
 
 **Output example** of enrichment result is available in inst/examples/result.txt
 
-The **thesis data** is in thesisData folder and thesisData/extdata_interpretation.txt explains the data source.
+The **thesis data** is in thesisData folder (https://github.com/liangcheng-hrbmu/EnrichDO/thesisData/) 
+and extdata_interpretation.txt explains the data source.
+
