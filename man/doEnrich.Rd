@@ -7,7 +7,7 @@
 doEnrich(
   interestGenes,
   test = c("hypergeomTest", "fisherTest", "binomTest", "chisqTest", "logoddTest"),
-  method = c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"),
+  method = c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"),
   m = 1,
   maxGsize = 5000,
   minGsize = 5,
@@ -46,20 +46,8 @@ given a list of genes, this function combines topological properties of the dise
 }
 \examples{
 #The enrichment results were obtained by using demo.data
-demo.data <- c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-demo_result <- doEnrich(interestGenes=demo.data)
-
-#setting the penalty to FALSE, the algorithm can mitigate the extent of reduced nodes' weights
-penalF_demo <- doEnrich(interestGenes=demo.data, penalize = FALSE)
-
-#Statistical models and P-value correction can be set
-demo_result2 <- doEnrich(demo.data, test='hypergeomTest', method='holm')
-
-#Using the traditional enrichment analysis method.
-Tradition_demo <- doEnrich(demo.data, traditional = TRUE)
-
-#Between the number of genes in minGsize and maxGsize doterm enrichment analysis
-demo_result3 <- doEnrich(demo.data, minGsize=5, maxGsize=500)
+demo.data <- c(1636,351,102,2932,3077,348,4137,54209)
+demo_result <- doEnrich(interestGenes=demo.data,maxGsize = 100, minGsize=10)
 }
 \author{
 Haixiu Yang

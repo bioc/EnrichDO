@@ -22,8 +22,8 @@ scatter graph
 The enrichment results are shown in a scatter plot
 }
 \examples{
-demo.data <- c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-sample2 <- doEnrich(interestGenes=demo.data)
+demo.data <- c(1636,351,102,2932,3077,348,4137,54209)
+sample2 <- doEnrich(interestGenes=demo.data,maxGsize = 100, minGsize=10)
 drawPointGraph(EnrichResult=sample2, n=10, delta=0.05)
 }
 \author{

@@ -22,8 +22,8 @@ bar graph
 The enrichment results are shown in a bar chart
 }
 \examples{
-demo.data <- c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-sample1 <- doEnrich(interestGenes=demo.data)
+demo.data <- c(1636,351,102,2932,3077,348,4137,54209)
+sample1 <- doEnrich(interestGenes=demo.data,maxGsize = 100, minGsize=10)
 drawBarGraph(EnrichResult=sample1, n=10, delta=0.05)
 }
 \author{

@@ -33,8 +33,8 @@ tree diagram
 the enrichment results are shown in a tree diagram
 }
 \examples{
-demo.data <- c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-sample5 <- doEnrich(interestGenes=demo.data)
+demo.data <- c(1636,351,102,2932,3077,348,4137,54209)
+sample5 <- doEnrich(interestGenes=demo.data,maxGsize = 100, minGsize=10)
 drawGraphViz(EnrichResult =sample5)
 
 #The p-value and the number of intersections are not visible

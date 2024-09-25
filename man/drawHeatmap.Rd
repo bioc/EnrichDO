@@ -36,8 +36,8 @@ heat map
 The top DOID_n nodes in the enrichment results showed the top gene_n genes with the highest weight sum.
 }
 \examples{
-demo.data <- c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-sample6 <- doEnrich(interestGenes=demo.data)
+demo.data <- c(1636,351,102,2932,3077,348,4137,54209)
+sample6 <- doEnrich(interestGenes=demo.data,maxGsize = 100, minGsize=10)
 drawHeatmap(interestGenes=demo.data, EnrichResult = sample6, gene_n = 10)
 }
 \author{

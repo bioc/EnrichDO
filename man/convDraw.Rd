@@ -19,7 +19,7 @@ using the result of writeResult for convenience drawing.
 #'#Draw from wrireResult output files
 #Firstly, read the wrireResult output file,using the following two lines
 data <- read.delim(file.path(system.file('examples', package = 'EnrichDO'), 'result.txt'))
-convDraw(resultDO = data)
+enrich <- convDraw(resultDO = data)
 #then, Use the drawing function you need
 drawGraphViz(enrich=enrich)    #Tree diagram
 drawPointGraph(enrich=enrich)  #Bubble diagram
