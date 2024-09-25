@@ -17,12 +17,13 @@ Alzheimer <- read.csv(EnrichDO_example("Alzheimer_curated.csv"), header = F)
 Alzheimer_gene <- Alzheimer$V1
 
 # Enrichment Analysis
-Alzheimer_EnrichDO <- doEnrich(interestGenes = Alzheimer_gene, test = "hypergeomTest", method = "BH", m = 1, maxGsize = 5000, minGsize = 5, traditional = FALSE,
-    delta = 0.01, penalize = T)
+Alzheimer_EnrichDO <- doEnrich(interestGenes = Alzheimer_gene, test = "hypergeomTest", method = "BH", m = 1,
+    maxGsize = 5000, minGsize = 5, traditional = FALSE, delta = 0.01, penalize = T)
 
 # Enrichment result visualization
 writeDoTerms(doterms, file = file.path(system.file("examples", package = "EnrichDO"), "doterms.txt"))
-writeResult(EnrichResult = Alzheimer_EnrichDO, file = file.path(system.file("examples", package = "EnrichDO"), "result.txt"), Q = 1, P = 1)
+writeResult(EnrichResult = Alzheimer_EnrichDO, file = file.path(system.file("examples", package = "EnrichDO"),
+    "result.txt"), Q = 1, P = 1)
 
 pdf(file.path(system.file("examples", package = "EnrichDO"), "BarGraph.pdf"))
 drawBarGraph(EnrichResult = Alzheimer_EnrichDO, n = 10, delta = 0.05)
@@ -37,5 +38,6 @@ drawGraphViz(EnrichResult = Alzheimer_EnrichDO, n = 10, numview = FALSE, pview =
 dev.off()
 
 pdf(file.path(system.file("examples", package = "EnrichDO"), "HeatmapGraph.pdf"))
-drawHeatmap(interestGenes = Alzheimer_gene, EnrichResult = Alzheimer_EnrichDO, gene_n = 10, fontsize_row = 8, readable = T)
+drawHeatmap(interestGenes = Alzheimer_gene, EnrichResult = Alzheimer_EnrichDO, gene_n = 10, fontsize_row = 8,
+    readable = T)
 dev.off()
