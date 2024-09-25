@@ -21,24 +21,12 @@
 #'@export
 #'@examples
 #'#The enrichment results were obtained by using demo.data
-#'demo.data <- c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-#'demo_result <- doEnrich(interestGenes=demo.data)
-#'
-#'#setting the penalty to FALSE, the algorithm can mitigate the extent of reduced nodes' weights
-#'penalF_demo <- doEnrich(interestGenes=demo.data, penalize = FALSE)
-#'
-#'#Statistical models and P-value correction can be set
-#'demo_result2 <- doEnrich(demo.data, test='hypergeomTest', method='holm')
-#'
-#'#Using the traditional enrichment analysis method.
-#'Tradition_demo <- doEnrich(demo.data, traditional = TRUE)
-#'
-#'#Between the number of genes in minGsize and maxGsize doterm enrichment analysis
-#'demo_result3 <- doEnrich(demo.data, minGsize=5, maxGsize=500)
-
+#'demo.data <- c(1636,351,102,2932,3077,348,4137,54209)
+#'demo_result <- doEnrich(interestGenes=demo.data,maxGsize = 100, minGsize=10)
 # main function
-doEnrich <- function(interestGenes, test = c("hypergeomTest", "fisherTest", "binomTest", "chisqTest", "logoddTest"), method = c("holm", "hochberg",
-    "hommel", "bonferroni", "BH", "BY", "fdr", "none"), m = 1, maxGsize = 5000, minGsize = 5, traditional = FALSE, delta = 0.01, penalize = TRUE, allDOTerms = FALSE) {
+doEnrich <- function(interestGenes, test = c("hypergeomTest", "fisherTest", "binomTest", "chisqTest", "logoddTest"),
+    method = c("BH", "holm", "hochberg", "hommel", "bonferroni", "BY", "fdr", "none"), m = 1, maxGsize = 5000,
+    minGsize = 5, traditional = FALSE, delta = 0.01, penalize = TRUE, allDOTerms = FALSE) {
     if (m > 13) {
         stop("The disease ontology hierarchy is limited to layers 1 to 13")
     }
@@ -47,8 +35,10 @@ doEnrich <- function(interestGenes, test = c("hypergeomTest", "fisherTest", "bin
     method <- match.arg(method, several.ok = FALSE)
 
     init(traditional)
+
+
     interestGenes <- intersect(interestGenes, dotermgenes)
-    enrich <- get("enrich", envir = .EnrichDOenv)
+    enrich <- .EnrichDOenv$enrich
     enrich <- enrich %>%
         mutate(cg.arr = map(gene.arr, intersect, interestGenes)) %>%
         mutate(cg.len = map_int(cg.arr, length)) %>%
@@ -60,9 +50,9 @@ doEnrich <- function(interestGenes, test = c("hypergeomTest", "fisherTest", "bin
     if (length(doidCount) == 0) {
         warning("No DOTerm met the condition")
     }
-    assign("doidCount", doidCount, envir = .EnrichDOenv)
+    .EnrichDOenv$doidCount <- doidCount
 
-    enrichPvalue <- get("enrichPvalue", envir = .EnrichDOenv)
+    enrichPvalue <- .EnrichDOenv$enrichPvalue
 
     if (traditional == TRUE) {
         pwalk(currentEnrich, function(DOID, p, gene.arr, gene.w, ...) {
@@ -95,27 +85,24 @@ doEnrich <- function(interestGenes, test = c("hypergeomTest", "fisherTest", "bin
         }
     }
 
-    enrichPvalue <- get("enrichPvalue", envir = .EnrichDOenv)
+    enrichPvalue <- .EnrichDOenv$enrichPvalue
     enrich$p <- as.numeric(map(enrich$DOID, function(d) {
         as.numeric(enrichPvalue[[d]])
     }))
 
-    enrichWeight <- get("enrichWeight", envir = .EnrichDOenv)
+    enrichWeight <- .EnrichDOenv$enrichWeight
     enrich$gene.w <- map(enrich$DOID, function(d) {
         enrichWeight[[d]]
     })
 
     enrich <- enrich %>%
         arrange(p)
-
+    enrich <- mutate(enrich, p.adjust = p.adjust(p, method = method))
     if (allDOTerms == FALSE) {
         enrich <- filter(enrich, p < delta)
     }
-
-
-    enrich <- mutate(enrich, p.adjust = p.adjust(p, method = method))
-    result <- new("EnrichResult", enrich = enrich, interestGenes = interestGenes, test = test, method = method, m = m, maxGsize = maxGsize, minGsize = minGsize,
-        delta = delta, traditional = traditional, penalize = penalize)
+    result <- new("EnrichResult", enrich = enrich, interestGenes = interestGenes, test = test, method = method,
+        m = m, maxGsize = maxGsize, minGsize = minGsize, delta = delta, traditional = traditional, penalize = penalize)
 
     return(result)
 }

@@ -8,11 +8,12 @@
 #'@return bar graph
 #'@importFrom magrittr `%>%`
 #'@importFrom dplyr mutate filter select
+#'@importFrom stats na.omit reorder
 #'@import ggplot2
 #'@export
 #'@examples
-#'demo.data <- c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-#'sample1 <- doEnrich(interestGenes=demo.data)
+#'demo.data <- c(1636,351,102,2932,3077,348,4137,54209)
+#'sample1 <- doEnrich(interestGenes=demo.data,maxGsize = 100, minGsize=10)
 #'drawBarGraph(EnrichResult=sample1, n=10, delta=0.05)
 
 drawBarGraph <- function(EnrichResult = NULL, enrich = NULL, n = 10, delta = 1e-15) {
@@ -32,11 +33,12 @@ drawBarGraph <- function(EnrichResult = NULL, enrich = NULL, n = 10, delta = 1e-
     data <- data[1:n, ]
     data <- na.omit(data)
     if (dim(data)[1] < n) {
-        message(str_c("The threshold delta is too low, only ", dim(data)[1], " nodes are less than the threshold", "\n"))
+        message(str_c("The threshold delta is too low, only ", dim(data)[1], " nodes are less than the threshold",
+            "\n"))
     }
 
-    ggplot(data, aes(x = reorder(DO, log10p), y = geneRatio, fill = log10p)) + geom_bar(stat = "identity") + coord_flip() + scale_x_discrete(position = "top") +
-        scale_fill_gradient(low = "orange", high = "red")
+    ggplot(data, aes(x = reorder(DO, log10p), y = geneRatio, fill = log10p)) + geom_bar(stat = "identity") +
+        coord_flip() + scale_x_discrete(position = "top") + scale_fill_gradient(low = "orange", high = "red")
 
 }
 #'@title drawPointGraph
@@ -48,12 +50,13 @@ drawBarGraph <- function(EnrichResult = NULL, enrich = NULL, n = 10, delta = 1e-
 #'@author Haixiu Yang
 #'@return scatter graph
 #'@importFrom dplyr mutate filter select
+#'@importFrom stats na.omit reorder
 #'@importFrom ggplot2 ggplot
 #'@importFrom magrittr `%>%`
 #'@export
 #'@examples
-#'demo.data <- c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-#'sample2 <- doEnrich(interestGenes=demo.data)
+#'demo.data <- c(1636,351,102,2932,3077,348,4137,54209)
+#'sample2 <- doEnrich(interestGenes=demo.data,maxGsize = 100, minGsize=10)
 #'drawPointGraph(EnrichResult=sample2, n=10, delta=0.05)
 drawPointGraph <- function(EnrichResult = NULL, enrich = NULL, n = 10, delta = 1e-15) {
 
@@ -73,11 +76,12 @@ drawPointGraph <- function(EnrichResult = NULL, enrich = NULL, n = 10, delta = 1
     data <- data[1:n, ]
     data <- na.omit(data)
     if (dim(data)[1] < n) {
-        message(str_c("The threshold delta is too low, only ", dim(data)[1], " nodes are less than the threshold", "\n"))
+        message(str_c("The threshold delta is too low, only ", dim(data)[1], " nodes are less than the threshold",
+            "\n"))
     }
 
-    ggplot(data) + geom_point(mapping = aes(x = geneRatio, y = reorder(DO, log10p), size = as.numeric(cg.len), color = log10p)) + scale_y_discrete(position = "right") +
-        scale_color_gradient(low = "blue", high = "red")
+    ggplot(data) + geom_point(mapping = aes(x = geneRatio, y = reorder(DO, log10p), size = as.numeric(cg.len),
+        color = log10p)) + scale_y_discrete(position = "right") + scale_color_gradient(low = "blue", high = "red")
 }
 #'@title writeDoTerms
 #'@description Output DOterms as text
@@ -138,10 +142,11 @@ showDoTerms <- function(doterms = doterms) {
 #'@importFrom magrittr `%>%`
 #'@export
 #'@examples
-#'demo.data <- c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-#'sample4 <- doEnrich(interestGenes=demo.data)
+#'demo.data <- c(1636,351,102,2932,3077,348,4137,54209)
+#'sample4 <- doEnrich(interestGenes=demo.data,maxGsize = 100, minGsize=10)
 #'writeResult(EnrichResult=sample4, file=file.path(tempdir(), 'result.txt'))
 writeResult <- function(EnrichResult = NULL, file, Q = 1, P = 1) {
+
     enrich <- as.data.frame(EnrichResult@enrich)
     data <- enrich %>%
         mutate(cg = map_chr(cg.arr, str_c, collapse = ",")) %>%
@@ -173,10 +178,11 @@ writeResult <- function(EnrichResult = NULL, file, Q = 1, P = 1) {
 #'@importFrom grDevices heat.colors
 #'@importFrom RColorBrewer brewer.pal
 #'@importFrom dplyr filter
+#'@importFrom graphics text
 #'@export
 #'@examples
-#'demo.data <- c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-#'sample5 <- doEnrich(interestGenes=demo.data)
+#'demo.data <- c(1636,351,102,2932,3077,348,4137,54209)
+#'sample5 <- doEnrich(interestGenes=demo.data,maxGsize = 100, minGsize=10)
 #'drawGraphViz(EnrichResult =sample5)
 #'
 #'#The p-value and the number of intersections are not visible
@@ -192,7 +198,8 @@ drawGraphViz <- function(EnrichResult = NULL, enrich = NULL, n = 10, labelfontsi
     }
     enrich0 <- enrich0 %>%
         arrange(p)
-    assign("enrich", enrich0, envir = .GlobalEnv)
+
+
 
     data <- enrich0[1:n, ]
     nodes <- c()
@@ -268,7 +275,8 @@ drawGraphViz <- function(EnrichResult = NULL, enrich = NULL, n = 10, labelfontsi
     names(shapes) <- nodes(rEG)
     nAttrs$shape <- shapes
 
-    g1layout <- agopen(rEG, name = "foo", nodeAttrs = nAttrs, attrs = list(graph = list(rankdir = "TB"), node = list(fixedsize = FALSE)), )
+    g1layout <- agopen(rEG, name = "foo", nodeAttrs = nAttrs, attrs = list(graph = list(rankdir = "TB"), node = list(fixedsize = FALSE)),
+        )
     Rgraphviz::plot(g1layout)
     if (pview == TRUE) {
         for (i in 1:length(g1layout@AgNode)) {
@@ -279,7 +287,8 @@ drawGraphViz <- function(EnrichResult = NULL, enrich = NULL, n = 10, labelfontsi
             if (pval != 1) {
                 pval <- format(pval, digit = 5, scientific = TRUE)
             }
-            text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])), labels = pval, pos = 1, col = "black", cex = 0.5)
+            text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])), labels = pval,
+                pos = 1, col = "black", cex = 0.5)
         }
     }
     if (numview == TRUE) {
@@ -288,7 +297,8 @@ drawGraphViz <- function(EnrichResult = NULL, enrich = NULL, n = 10, labelfontsi
             if (num == 0) {
                 num <- ""
             }
-            text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])), labels = num, pos = 3, col = "dark blue", cex = 0.5)
+            text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])), labels = num,
+                pos = 3, col = "dark blue", cex = 0.5)
         }
     }
 
@@ -313,11 +323,12 @@ drawGraphViz <- function(EnrichResult = NULL, enrich = NULL, n = 10, labelfontsi
 #'@importFrom clusterProfiler bitr
 #'@export
 #'@examples
-#'demo.data <- c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-#'sample6 <- doEnrich(interestGenes=demo.data)
+#'demo.data <- c(1636,351,102,2932,3077,348,4137,54209)
+#'sample6 <- doEnrich(interestGenes=demo.data,maxGsize = 100, minGsize=10)
 #'drawHeatmap(interestGenes=demo.data, EnrichResult = sample6, gene_n = 10)
 
-drawHeatmap <- function(interestGenes, EnrichResult = NULL, DOID_n = 10, gene_n = 50, fontsize_row = 10, readable = TRUE, ...) {
+drawHeatmap <- function(interestGenes, EnrichResult = NULL, DOID_n = 10, gene_n = 50, fontsize_row = 10, readable = TRUE,
+    ...) {
 
     enrich <- as.data.frame(EnrichResult@enrich)
     n <- DOID_n
@@ -335,20 +346,25 @@ drawHeatmap <- function(interestGenes, EnrichResult = NULL, DOID_n = 10, gene_n 
     m <- min(gene_n, length(interestgenes))
 
     if (length(diffGene) != 0) {
-        note <- paste0("\033[31m", "The following genes you input do not exist in the top DOID_n nodes:", "\n", paste0(diffGene, collapse = " "), "\n",
-            "\033[39m")
+        note <- paste0("\033[31m", "The following genes you input do not exist in the top DOID_n nodes:", "\n",
+            paste0(diffGene, collapse = " "), "\n", "\033[39m")
         message(note)
     }
 
-    assign("weightMatrix", NULL, pos = 1)
-    weightMatrix <<- matrix(0, nrow = n + 1, ncol = length(interestgenes), dimnames = list(c(data$DOID, "colSum"), interestgenes))
+    weightMatrix <- matrix(0, nrow = n + 1, ncol = length(interestgenes), dimnames = list(c(data$DOID, "colSum"),
+        interestgenes))
+    .EnrichDOenv$weightMatrix <- weightMatrix
+
 
     # DOID-gene weight matrix
     map2(data$gene.w, data$DOID, function(w, id) {
+        weightMatrix <- .EnrichDOenv$weightMatrix
         gene <- w[intersect(interestgenes, names(w))]
-        weightMatrix[id, names(gene)] <<- as.numeric(gene)
+        weightMatrix[id, names(gene)] <- as.numeric(gene)
+        .EnrichDOenv$weightMatrix <- weightMatrix
     })
-    weightMatrix[n + 1, ] <<- colSums(weightMatrix)
+    weightMatrix <- .EnrichDOenv$weightMatrix
+    weightMatrix[n + 1, ] <- colSums(weightMatrix)
     weightmatrix <- t(weightMatrix[-(n + 1), names(sort(weightMatrix[n + 1, ], decreasing = TRUE)[1:m])])
 
     if (readable == TRUE) {
@@ -360,7 +376,8 @@ drawHeatmap <- function(interestGenes, EnrichResult = NULL, DOID_n = 10, gene_n 
 
     }
     colors <- colorRampPalette(brewer.pal(11, "RdYlBu")[6:3])(10)
-    pheatmap(weightmatrix, border_color = NA, cluster_cols = FALSE, color = colors, angle_col = 45, fontsize_row = fontsize_row, ...)
+    pheatmap(weightmatrix, border_color = NA, cluster_cols = FALSE, color = colors, angle_col = 45, fontsize_row = fontsize_row,
+        ...)
 
 }
 
@@ -375,21 +392,15 @@ drawHeatmap <- function(interestGenes, EnrichResult = NULL, DOID_n = 10, gene_n 
 #'#'#Draw from wrireResult output files
 #'#Firstly, read the wrireResult output file,using the following two lines
 #'data <- read.delim(file.path(system.file('examples', package = 'EnrichDO'), 'result.txt'))
-#'convDraw(resultDO = data)
+#'enrich <- convDraw(resultDO = data)
 #'#then, Use the drawing function you need
 #'drawGraphViz(enrich=enrich)    #Tree diagram
 #'drawPointGraph(enrich=enrich)  #Bubble diagram
 #'drawBarGraph(enrich=enrich)    #Bar plot
 
 convDraw <- function(resultDO) {
-    if (!exists(".EnrichDOenv", envir = .GlobalEnv))
-        {
-            pos <- 1
-            envir <- as.environment(pos)
-            assign(".EnrichDOenv", new.env(), envir = envir)
-        }  #create new env
-    .EnrichDOenv <- get(".EnrichDOenv", envir = .GlobalEnv)
-
     TermStruct(resultDO = resultDO)
     message("Now you can use the drawing function")
+    enrich <- .EnrichDOenv$enrich
+    return(enrich)
 }

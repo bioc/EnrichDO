@@ -7,6 +7,7 @@
 #'@importFrom tidyr separate
 #'@import purrr
 #'@import hash
+#'@importFrom utils str
 #'@importFrom S4Vectors DataFrame
 #'@importFrom magrittr `%>%`
 #'@importFrom BiocGenerics intersect
@@ -14,29 +15,27 @@
 #'@return  A \code{EnrichResult} instance.
 # doterm structure output
 TermStruct <- function(resultDO) {
-    assign("doterms", doterms, envir = .EnrichDOenv)
+    if (!exists(".EnrichDOenv"))
+        .initial()
+    .EnrichDOenv <- get(".EnrichDOenv", envir = .GlobalEnv)
+
     enrichDOterms <- filter(doterms, doterms$DOID %in% resultDO$DOID) %>%
         select(DOID, parent.arr, gene.len)
     enrichResult <- separate(resultDO, col = geneRatio, sep = "/", into = c("cg.len", "ig.len"))
     enrich <- merge(enrichResult, enrichDOterms, by = "DOID")
     enrich <- arrange(enrich, p)
     enrich <- DataFrame(enrich)
-    assign("enrich", enrich, pos = 1)
+    .EnrichDOenv$enrich <- enrich
+
     message("The enrichment results you provide are stored in enrich", "\n")
 }
+
+
 # init
 init <- function(traditional) {
-    if (!exists(".EnrichDOenv", envir = .GlobalEnv))
-        {
-            pos <- 1
-            envir <- as.environment(pos)
-            assign(".EnrichDOenv", new.env(), envir = envir)
-        }  #create new env
+    if (!exists(".EnrichDOenv"))
+        .initial()
     .EnrichDOenv <- get(".EnrichDOenv", envir = .GlobalEnv)
-
-    assign("enrich", NULL, envir = .EnrichDOenv)
-    assign("doidCount", NULL, envir = .EnrichDOenv)
-    assign("doterms", doterms, envir = .EnrichDOenv)
 
     # init gene weight
     if (traditional == TRUE) {
@@ -57,33 +56,27 @@ init <- function(traditional) {
         message("\t\t -- Descending rights test-- ", "\n")
     }
 
-    assign("enrich", enrich, envir = .EnrichDOenv)
+    .EnrichDOenv$enrich <- enrich
 
     enrichWeight <- hash(enrich$DOID, enrich$gene.w)
     enrichPvalue <- hash(enrich$DOID, 1)
     enrichgeneArr <- hash(enrich$DOID, enrich$gene.arr)
-    assign("enrichWeight", enrichWeight, envir = .EnrichDOenv)
-    assign("enrichPvalue", enrichPvalue, envir = .EnrichDOenv)
-    assign("enrichgeneArr", enrichgeneArr, envir = .EnrichDOenv)
-
-
-    return(.EnrichDOenv)
+    .EnrichDOenv$enrichWeight <- enrichWeight
+    .EnrichDOenv$enrichPvalue <- enrichPvalue
+    .EnrichDOenv$enrichgeneArr <- enrichgeneArr
 }
 
 # Recursive similarity calculation function
 computeTermSig <- function(interestGenes, level, DOID, parents, childrenToTest, test, traditional, delta, penalize) {
-    enrichWeight <- get("enrichWeight", envir = .EnrichDOenv)
-    enrichPvalue <- get("enrichPvalue", envir = .EnrichDOenv)
-    enrichgeneArr <- get("enrichgeneArr", envir = .EnrichDOenv)
 
-    genes <- enrichgeneArr[[DOID]]
-    weights <- enrichWeight[[DOID]]
+    genes <- .EnrichDOenv$enrichgeneArr[[DOID]]
+    weights <- .EnrichDOenv$enrichWeight[[DOID]]
     p <- Test(test, interestGenes, genes, weights)
     if (p == 0) {
         p <- .Machine$double.xmin
     }
 
-    assign(DOID, p, envir = enrichPvalue)  #update P value
+    assign(DOID, p, envir = .EnrichDOenv$enrichPvalue)  #update P value
 
     if (length(childrenToTest) == 0)
         return(0)
@@ -93,13 +86,14 @@ computeTermSig <- function(interestGenes, level, DOID, parents, childrenToTest, 
         return(0)
 
     sigRatios <- map_dbl(childrenToTest, function(c.DOID) {
-        return(log(enrichPvalue[[c.DOID]])/log(p))
+        return(log(.EnrichDOenv$enrichPvalue[[c.DOID]])/log(p))
     })
     names(sigRatios) <- childrenToTest
 
     if (penalize == TRUE) {
         penal <- map_dbl(childrenToTest, function(c.DOID) {
-            penall <- max(1/10 * log10(.Machine$double.xmin)/(log10(enrichPvalue[[c.DOID]]) + log10(p)), 1)
+            penall <- max(1/10 * log10(.Machine$double.xmin)/(log10(.EnrichDOenv$enrichPvalue[[c.DOID]]) + log10(p)),
+                1)
             return(penall)
         })
     } else {
@@ -119,15 +113,15 @@ computeTermSig <- function(interestGenes, level, DOID, parents, childrenToTest, 
 
         pwalk(Penal_sigR, function(ch.DOID, ch.penal, ch.sigRatio) {
 
-            ch.weight <- enrichWeight[[ch.DOID]]
-            ch.genes <- enrichgeneArr[[ch.DOID]]
+            ch.weight <- .EnrichDOenv$enrichWeight[[ch.DOID]]
+            ch.genes <- .EnrichDOenv$enrichgeneArr[[ch.DOID]]
 
             ch.weight <- ch.weight * ch.sigRatio/ch.penal
 
             ch.p <- Test(test, interestGenes, ch.genes, ch.weight)
 
-            assign(ch.DOID, ch.p, envir = enrichPvalue)
-            assign(ch.DOID, ch.weight, envir = enrichWeight)
+            assign(ch.DOID, ch.p, envir = .EnrichDOenv$enrichPvalue)
+            assign(ch.DOID, ch.weight, envir = .EnrichDOenv$enrichWeight)
 
         })
 
@@ -139,33 +133,30 @@ computeTermSig <- function(interestGenes, level, DOID, parents, childrenToTest, 
 
         pwalk(Penal_sigR, function(ch.DOID, ch.penal, ch.sigRatio) {
 
-            ch.weight <- enrichWeight[[ch.DOID]]
-            ch.genes <- enrichgeneArr[[ch.DOID]]
+            ch.weight <- .EnrichDOenv$enrichWeight[[ch.DOID]]
+            ch.genes <- .EnrichDOenv$enrichgeneArr[[ch.DOID]]
 
             same.genes <- intersect(ch.genes, genes)
             weights[same.genes] <- weights[same.genes]/(ch.sigRatio * ch.penal)
 
-            assign(DOID, weights, envir = enrichWeight)
+            assign(DOID, weights, envir = .EnrichDOenv$enrichWeight)
 
             ancestors <- getAncestors(DOID)
 
-            doidCount <- get("doidCount", envir = .EnrichDOenv)
+            doidCount <- .EnrichDOenv$doidCount
             ancestors <- intersect(ancestors, doidCount)
 
             walk(ancestors, function(anc.DOID) {
 
-                anc.genes <- enrichgeneArr[[anc.DOID]]
-                anc.weight <- enrichWeight[[anc.DOID]]
+                anc.genes <- .EnrichDOenv$enrichgeneArr[[anc.DOID]]
+                anc.weight <- .EnrichDOenv$enrichWeight[[anc.DOID]]
 
                 same.genes <- intersect(ch.genes, anc.genes)
                 anc.weight[same.genes] <- anc.weight[same.genes]/(ch.sigRatio * ch.penal)
 
-                assign(anc.DOID, anc.weight, envir = enrichWeight)
+                assign(anc.DOID, anc.weight, envir = .EnrichDOenv$enrichWeight)
             })
         })
-
-        assign("enrichWeight", enrichWeight, envir = .EnrichDOenv)
-        assign("enrichPvalue", enrichPvalue, envir = .EnrichDOenv)
 
         computeTermSig(interestGenes, level, DOID, parents, names(nsigRatios), test, traditional, delta, penalize)
     }
@@ -185,8 +176,8 @@ Test <- function(test, interestGenes, genes, weights) {
     wc <- length(c)
     wd <- length(d)
 
-    switch(test, fisherTest = fisherTest(wa, wb, wc, wd), hypergeomTest = hypergeomTest(wa, wb, wc, wd), binomTest = binomTest(wa, wb, wc), chisqTest = chisqTest(wa,
-        wb, wc, wd), logoddTest = logoddTest(wa, wb, wc, wd))
+    switch(test, fisherTest = fisherTest(wa, wb, wc, wd), hypergeomTest = hypergeomTest(wa, wb, wc, wd), binomTest = binomTest(wa,
+        wb, wc), chisqTest = chisqTest(wa, wb, wc, wd), logoddTest = logoddTest(wa, wb, wc, wd))
 }
 
 ### fisher
@@ -237,7 +228,7 @@ logoddTest <- function(wa, wb, wc, wd) {
 
 # get ancestors
 getAncestors <- function(DOID, trace = FALSE) {
-    doterms <- get("doterms", envir = .EnrichDOenv)
+
     ancestors <- c()
     if (DOID == "DOID:4")
         return(ancestors)  #root
