@@ -50,9 +50,9 @@ devtools::install_github("liangcheng-hrbmu/EnrichDO")
 
 # Introduction
 
-Disease Ontology (DO) enrichment analysis is an effective means to discover the associations between genes and diseases. However, most current DO-based enrichment methods were unable to solve the over enriched problem caused by the “true-path” rule. To address this problem, we presented EnrichDO, a double weighted iterative model by integrating the DO graph topology on a global scale. EnrichDO was based on the latest annotations of the human genome with DO terms, and double weighted the annotated genes. On one hand, to reinforce the saliency of direct gene-DO annotations, different initial weights were assigned to directly annotated genes and indirectly annotated genes, respectively. On the other hand, to detect locally most significant node between the parent and its children, less significant nodes were dynamically down-weighted. EnrichDO exhibits higher accuracy that often yield more specific significant DO terms, which alleviate the over enriched problem.
+Disease Ontology (DO) enrichment analysis is an effective means to discover the associations between genes and diseases. However, most current DO-based enrichment methods were unable to solve the over enriched problem caused by the “true-path” rule. To address this problem, we presents EnrichDO, a double weighted iterative model, which is based on the latest annotations of the human genome with DO terms and integrates the DO graph topology on a global scale. On one hand, to reinforce the saliency of direct gene-DO annotations, different initial weights are assigned to directly annotated genes and indirectly annotated genes, respectively. On the other hand, to detect locally most significant node between the parent and its children, less significant nodes are dynamically down-weighted. EnrichDO exhibits high accuracy that it can identify more specific DO terms, which alleviates the over enriched problem.
 
-EnrichDO encompasses a variety of statistical models and visualization schemes for discovering the disease-gene relationships under biological big data. Currently uploaded to Bioconductor, we anticipate that our R package will provide a more convenient and effective DO enrichment tool.
+EnrichDO encompasses various statistical models and visualization schemes for discovering the associations between genes and diseases from biological big data. Currently uploaded to Bioconductor, EnrichDO aims to provide a more convenient and effective DO enrichment analysis tool.
 
 ```{r setup,results='hide'}
 library(EnrichDO)
@@ -60,15 +60,15 @@ library(EnrichDO)
 
 # Weighted DO Enrichment Analysis
 
-EnrichDO is a double weighted iterative model for DO enrichment analysis. Based on the latest annotations of the human genome with DO terms, EnrichDO can identify locally significant enriched nodes by applying different initial weights and dynamic weights for annotated genes and integrating the DO graph topology on a global scale. EnrichDO is an effective and flexible model that supplies various statistical testing models and multiple testing correction methods.
+EnrichDO presents a double weighted iterative model for DO enrichment analysis. Based on the latest annotations of the human genome with DO terms, EnrichDO can identify locally significant enriched terms by applying different initial weights and dynamic weights for annotated genes and integrating the DO graph topology on a global scale. EnrichDO presents an effective and flexible model, which supplies various statistical testing models and multiple testing correction methods.
 
 ## doEnrich function
 
-In EnrichDO, we implemented ***doEnrich*** to realize the enrichment analysis of ontology by combining topological properties of ontology graph structure.
+In EnrichDO, we use ***doEnrich*** to realize the enrichment analysis of DO by integrating topological properties of DO graph structures.
 
 ### Result description
 
-In the following example, several genes (*demo.data*) are randomly selected from the protein-coding genes for analysis. The parameters of ***doEnrich*** is default.
+In the following example, several genes (*demo.data*) are randomly selected from the protein-coding genes for analysis. The parameters of ***doEnrich*** are default.
 
 ```{r label=init,eval=TRUE,echo=TRUE,collapse=FALSE,cache=TRUE}
 demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
@@ -76,36 +76,35 @@ demo_result<-doEnrich(interestGenes=demo.data)
 show(demo_result)
 ```
 
-Running ***doEnrich*** will output the nodes and total genes involved in each layer of DAG structure to the user. The ***show*** method can be used to present the overall result to the user.
+Running ***doEnrich*** will output the terms and total genes involved in each layer of Directed acyclic graph (DAG) to the user. The ***show*** method can be used to present the overall results to user.
 
-The result of ***doEnrich*** is *demo_result* which contains *enrich, interestGenes, test, method, m, maxGsize, minGsize, delta, traditional, penalize*. 
-There are 16 columns of *enrich*, including:
+The result of ***doEnrich*** is *demo_result* which contains *enrich, interestGenes, test, method, m, maxGsize, minGsize, delta, traditional, penalize*. There are 16 columns of *enrich*, including:
 
--   The standard ID corresponding to the disease in the Disease Ontology database (*DOID*).
+-   The standard ID corresponding to the DO Term (*DOID*).
 
--   the standard name of the disease (*DOTerm*), each DOterm has a unique DOID.
+-   the standard name of the DO Term (*DOTerm*), each DO Term has a unique DOID.
 
--   We constructed a directed acyclic graph according to the is_a relationship between each node in the DO database, and each DOterm has a corresponding level (*level*).
+-   We constructed a directed acyclic graph according to the is_a relationship between each node in the DO database, and each DO Term has a corresponding level (*level*).
 
--   The DO database stores the parent node of each DOterm (*parent.arr*) and its number (*parent.len*). For example, “B-cell acute lymphoblastic leukemia” (DOID:0080638) is_a “acute lymphoblastic leukemia” (DOID:9952) and “lymphoma” (DOID:0060058), then the node “B-cell acute lymphoblastic leukemia” is a child of “acute lymphoblastic leukemia” and “lymphoma”, and the child is a more specific biological classification than its parent.
+-   The DO database stores the parent node of each DO Term (*parent.arr*) and its number (*parent.len*). For example, “B-cell acute lymphoblastic leukemia” (DOID:0080638) is_a “acute lymphoblastic leukemia” (DOID:9952) and “lymphoma” (DOID:0060058), then the node “B-cell acute lymphoblastic leukemia” is a child of “acute lymphoblastic leukemia” and “lymphoma”, and the child is a more specific biological classification than its parent.
 
--   child nodes of the DOterm (*child.arr*) and its number (*child.len*).
+-   child nodes of the DO Term (*child.arr*) and their number (*child.len*).
 
--   the latest GeneRIF information was used to annotate DOterms, each DOterm has its corresponding disease-associated genes (*gene.arr*), and its number (*gene.len*).
+-   the latest GeneRIF information is used to annotate DO Terms, each DO Term has its corresponding disease-associated genes (*gene.arr*), and its number (*gene.len*).
 
--   Assigning a weight to each gene helps assess the contribution of different genes to DOterm (*weight.arr*).
+-   Assigning a weight to each gene helps assess the contribution of different genes to DO Terms (*weight.arr*).
 
 -   The smaller the weights of indirectly annotated genes, the less contribution of these genes in the enrichment analysis.(*gene.w*).
 
--   the P-value of the DOterm (*p*), which arrange the order of enrich, and the value of P-value correction (*p.adjust*).
+-   the P-value of the DO Term (*p*), which arranges the order of enrich, and the value of P-value correction (*p.adjust*).
 
--   the genes of interest annotated to this DOterm (*cg.arr*) and its number (*cg.len*).
+-   the genes of interest annotated to this DO Term (*cg.arr*) and its number (*cg.len*).
 
 -   the number of genes in the interest gene set (*ig.len*), this represents the number of genes that are actually used for enrichment analysis.
 
-Generally, a significant P value of the enrichment results was less than 0.05 or 0.01, and it was regarded that there was a significant association between the gene set of interest and the disease node. In the *Enrich*, the node with the most significant enrichment is DOID:0080832, and the DOTerm is mild cognitive impairment, with its P-value being 9.22e-16. These results suggested that there was statistical significance between the gene set of interest and mild cognitive impairment.
+Generally, a significant P value of the enrichment results should be less than 0.05 or 0.01, indicating a significant association between the interesting gene set and the disease node. In the *enrich*, the node with the most significant enrichment is DOID:0080832, and the DO Term is "mild cognitive impairment", with its P-value being 9.22e-16. These results suggests that there is statistical significance between the interesting gene set and the DO Term of mild cognitive impairment.
 
-The data frame *doterms* contains the information of the disease ontology for DAG construction. You can use showDoTerms to see the details.
+The data frame *doterms* contains the information of all DO Terms including DAG structures. You can use showDoTerms to see the details.
 
 ```{r eval=TRUE}
 head(doterms)
@@ -114,7 +113,7 @@ showDoTerms(doterms)
 
 ### Application cases of doEnrich function
 
-1.Weighted enrichment analysis with multiple parameters. Each parameter in the following example is suitable for enrichment analysis with weights. You can modify the parameter value as required.
+1.Weighted enrichment analysis with multiple parameters. Each parameter in the following example is suitable for enrichment analysis with weights. You can modify the parameter values as required.
 
 ```{r}
 weighted_demo<-doEnrich(interestGenes=demo.data,
@@ -127,13 +126,13 @@ weighted_demo<-doEnrich(interestGenes=demo.data,
                            penalize=TRUE)
 ```
 
-2.The parameter penalize was used to alleviate the impact of different magnitudes of p-values, default value is TRUE. When set to false, the degree of reduction in weight for non-significant nodes is decreased, resulting in a slight increase in significance for these nodes, i.e., their p-value will be reduced.
+2.The parameter penalize is used to alleviate the impact of different magnitudes of p-values, default value is TRUE. When set to FALSE, the degree of reduction in weight for non-significant nodes is decreased, resulting in a slight increase in significance for these nodes, i.e., their p-value will be reduced.
 
 ```{r }
 penalF_demo<-doEnrich(interestGenes=demo.data, penalize=FALSE)
 ```
 
-3.Using the traditional enrichment analysis method, it doesn't reduce weights according to the DAG structure. Parameters *test, method, m, maxGsize* and *minGsize* can be used flexibly.
+3.Using the traditional enrichment analysis method, it does not reduce weights according to the DAG structure. Parameters *test, method, m, maxGsize* and *minGsize* can be used flexibly.
 
 ```{r }
 Tradition_demo<-doEnrich(demo.data, traditional=TRUE)
@@ -151,12 +150,12 @@ writeDoTerms(doterms,file=file.path(tempdir(), "doterms.txt"))
 
 The ***writeResult*** function can output *DOID, DOTerm, p, p.adjust, geneRatio, bgRatio* and *cg* in the data frame *enrich* as text. The default file name is "result.txt".
 
-*geneRatio* represents the intersection of the doterm with the interest set divided by the interest gene set, and *bgRatio* represents all genes of the doterm divided by the background gene set.
+*geneRatio* represents the intersection of the DO term annotated genes with the interest gene set divided by the interest gene set, and *bgRatio* represents all genes of the DO term divided by the background gene set.
 
-***writeResult*** has four parameters. *Enrich* indicates the significant enrichment result of ***doEnrich***, *file* indicates the write address of a file. The parameter *Q* (and *P*) indicates that doterm is output only when *p.adjust* (and *p* value) is less than or equal to *Q* (and *P*). The default values for *P* and *Q* are 1.
+***writeResult*** has four parameters. *EnrichResult* indicates the enrichment result of ***doEnrich***, *file* indicates the write address of a file. The parameter *Q* (and *P*) indicates that a DO term is output only when *p.adjust* (and *p* value) is less than or equal to *Q* (and *P*). The default values for *P* and *Q* are 1.
 
 ```{r eval=TRUE}
-writeResult(demo_result,file=file.path(tempdir(), "result.txt"), Q=1, P=1)
+writeResult(EnrichResult = demo_result,file=file.path(tempdir(), "result.txt"), Q=1, P=1)
 ```
 
 # Visualization of enrichment results
@@ -181,9 +180,9 @@ drawPointGraph(EnrichResult=demo_result, n=10, delta=0.05)
 
 ## drawGraphViz function
 
-***drawGraphViz*** draws the DAG structure of the most significant *n* nodes, and *labelfontsize* can set the font size of labels in nodes (By default, *n* is 10 and *labelfontsize* is 14). The characters in the figure are the doterm's name corresponding to each node .
+***drawGraphViz*** draws the DAG structure of the most significant *n* nodes, and *labelfontsize* can set the font size of labels in nodes (By default, *n* is 10 and *labelfontsize* is 14). Each node has a corresponding disease name displayed.
 
-In addition, the ***drawGraphViz*** function can also display the P-value of each node in the enrichment analysis (*pview*=TRUE), and the number of overlapping genes of each doterm and interest set (*numview*=TRUE).
+In addition, the ***drawGraphViz*** function can also display the P-value of each node in the enrichment analysis (*pview*=TRUE), and the number of overlapping genes of each DO term and interest gene set (*numview*=TRUE).
 
 ```{r fig.cap="tree plot",fig.align='center',fig.width=7,fig.height=5}
 
@@ -193,11 +192,9 @@ drawGraphViz(EnrichResult=demo_result, n=10, numview=FALSE, pview=FALSE, labelfo
 
 ## drawHeatmap function
 
-***drawHeatmap*** function visualizes the strength of the relationship between the top *DOID_n* nodes from enrichment results and the genes whose weight sum ranks the top *gene_n* in these nodes. And the gene displayed must be included in the gene of interest. *readable* indicates whether the gene is displayed as its symbol.
+***drawHeatmap*** function visualizes the strength of the relationship between the top *DOID_n* nodes from enrichment results and the genes whose weight sum ranks the top *gene_n* in these nodes. And the gene must be included in the gene of interest. *readable* indicates whether the gene is displayed as its symbol.
 
-***drawHeatmap*** also provides additional parameters from the pheatmap function, which you can set according to your needs. Default *DOID_n* is10, *gene_n* is 50, *fontsize_row* is 10, *readable* is TRUE.
-
-Meanwhile, the *weightMatrix* variable is also written in the environment to store the corresponding values in the heatmap.
+***drawHeatmap*** also provides additional parameters from the pheatmap function, which you can set according to your needs. Default *DOID_n* is 10, *gene_n* is 50, *fontsize_row* is 10, *readable* is TRUE.
 
 ```{r fig.cap="heatmap",fig.align='center',fig.width=7,fig.height=5}
 drawHeatmap(interestGenes=demo.data,
@@ -213,8 +210,8 @@ Draw(***drawBarGraph ,drawPointGraph ,drawGraphViz***) from ***writeResult*** ou
 
 ```{r }
 #Firstly, read the wrireResult output file,using the following two lines
-data<-read.delim(file.path(system.file("examples", package="EnrichDO"), "result.txt"))
-convDraw(resultDO=data)
+data <- read.delim(file.path(system.file("examples", package="EnrichDO"), "result.txt"))
+enrich <- convDraw(resultDO=data)
 
 #then, Use the drawing function you need
 drawGraphViz(enrich=enrich)    #Tree diagram
