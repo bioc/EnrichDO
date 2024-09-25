@@ -1,24 +1,23 @@
 Package: EnrichDO
 Type: Package
-Title: Disease ontology annotation and enrichment analysis
-Version: 0.99.13
+Title: a Global Weighted Model for Disease Ontology Enrichment Analysis
+Version: 0.99.14
 Authors@R: c(
           person("Liang","Cheng",,"liangcheng@hrbmu.edu.cn",role=c("aut")),
           person("Haixiu","Yang",,"yanghaixiu@ems.hrbmu.edu.cn",role=c("aut")),
           person("Hongyu","Fu",,"2287531995@qq.com",role=c("cre"))
           )
-Description: This package combines topological properties of 
-    disease ontology structure to implement disease ontology 
-    enrichment analysis.Enrichment analyses including a variety 
-    of statistical models and visualization schemes for discovering 
-    the disease-gene relationship under biological big data.
-    EnrichDO exhibits higher accuracy that often yield more specific 
-    significant DO terms, which alleviate the over enriched problem.
+Description: To implement disease ontology (DO) enrichment analysis, this package is designed and presents
+            a double weighted model based on the latest annotations of the human genome with DO terms, by
+            integrating the DO graph topology on a global scale. This package exhibits high accuracy that
+            it can identify more specific DO terms, which alleviates the over enriched problem. The package
+            includes various statistical models and visualization schemes for discovering the associations
+            between genes and diseases from biological big data.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: BiocGenerics, Rgraphviz, clusterProfiler, hash, S4Vectors,
-    dplyr, ggplot2, graph, magrittr, methods, pheatmap,
+    dplyr, ggplot2, graph, magrittr, methods, pheatmap, graphics, utils,
     purrr, readr, stringr, tidyr, grDevices, stats, RColorBrewer
 biocViews: Annotation, Visualization, 
         GeneSetEnrichment, Software
