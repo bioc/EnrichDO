@@ -1,7 +1,7 @@
 Package: EnrichDO
 Type: Package
 Title: a Global Weighted Model for Disease Ontology Enrichment Analysis
-Version: 0.99.14
+Version: 0.99.15
 Authors@R: c(
           person("Liang","Cheng",,"liangcheng@hrbmu.edu.cn",role=c("aut")),
           person("Haixiu","Yang",,"yanghaixiu@ems.hrbmu.edu.cn",role=c("aut")),
@@ -28,6 +28,7 @@ Suggests:
     knitr,
     rmarkdown,
     org.Hs.eg.db,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    BiocStyle
 VignetteBuilder: knitr
 Config/testthat/edition: 3
