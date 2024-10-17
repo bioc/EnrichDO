@@ -1,10 +1,6 @@
 # EnrichDO
 
-<<<<<<< HEAD
 ***EnrichDO*** is a double weighted iterative model by integrating the DO graph topology on a global scale. ***EnrichDO*** was based on the latest annotations of the human genome with DO terms, and double weighted the annotated genes. On one hand, to reinforce the saliency of direct gene-DO annotations, different initial weights were assigned to directly annotated genes and indirectly annotated genes, respectively. On the other hand, to detect locally most significant node between the parent and its children, less significant nodes were dynamically down-weighted. ***EnrichDO*** exhibits higher accuracy that often yield more specific significant DO terms, which alleviate the over enriched problem. EnrichDO input genes as NCBI Entrez ID format.
-=======
-***EnrichDO*** is a double weighted iterative model by integrating the DO graph topology on a global scale. ***EnrichDO*** was based on the latest annotations of the human genome with DO terms, and double weighted the annotated genes. On one hand, to reinforce the saliency of direct gene-DO annotations, different initial weights were assigned to directly annotated genes and indirectly annotated genes, respectively. On the other hand, to detect locally most significant node between the parent and its children, less significant nodes were dynamically down-weighted. ***EnrichDO*** exhibits higher accuracy that often yield more specific significant DO terms, which alleviate the over enriched problem.
->>>>>>> cd3a7ee4650175408c7b0342d3622c0096570a7e
 
 ## Installation
 
@@ -35,10 +31,6 @@ The **input data case** is stored at inst/extdata/Alzheimer_curated.csv
 
 **Output example** of enrichment result is available in inst/examples/result.txt
 
-<<<<<<< HEAD
 The **thesis data** is in thesisData folder (https://github.com/liangcheng-hrbmu/EnrichDO/thesisData/) 
-=======
-The **thesis data** is in thesisData folder (https://github.com/liangcheng-hrbmu/EnrichDO/tree/devel/thesisData) 
->>>>>>> cd3a7ee4650175408c7b0342d3622c0096570a7e
 and extdata_interpretation.txt explains the data source.
 
