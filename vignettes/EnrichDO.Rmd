@@ -68,7 +68,7 @@ In EnrichDO, we use ***doEnrich*** to realize the enrichment analysis of DO by i
 
 ### Result description
 
-In the following example, several genes (*demo.data*) are randomly selected from the protein-coding genes for analysis. The parameters of ***doEnrich*** are default.
+In the following example, several genes (*demo.data*) are randomly selected from the protein-coding genes (NCBI Entrez ID) for analysis. The parameters of ***doEnrich*** are default.
 
 ```{r label=init,eval=TRUE,echo=TRUE,collapse=FALSE,cache=TRUE}
 demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
