@@ -1,7 +1,7 @@
 Package: EnrichDO
 Type: Package
 Title: a Global Weighted Model for Disease Ontology Enrichment Analysis
-Version: 0.99.15
+Version: 1.0.0
 Authors@R: c(
           person("Liang","Cheng",,"liangcheng@hrbmu.edu.cn",role=c("aut")),
           person("Haixiu","Yang",,"yanghaixiu@ems.hrbmu.edu.cn",role=c("aut")),
