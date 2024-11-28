@@ -9,16 +9,8 @@ author:
 - name: Hongyu Fu
   affiliation: College of Bioinformatics Science and Technology, Harbin Medical University
 date: "`r Sys.Date()`"
-<<<<<<< HEAD
 package: EnrichDO
 output: BiocStyle::html_document
-=======
-output:
-    BiocStyle::html_document:
-        toc: true
-        toc_float: true
-package: EnrichDO
->>>>>>> 225d247d561cfa4daf848f49bb427924c906773c
 vignette: >
   %\VignetteIndexEntry{EnrichDO: Disease Ontology Enrichment Analysis}
   %\VignetteEngine{knitr::rmarkdown}
@@ -37,34 +29,20 @@ knitr::opts_chunk$set(
 `EnrichDO` can be installed from Bioconductor:
 
 ```{r install_chunk, eval=FALSE}
-<<<<<<< HEAD
 
 if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 
 BiocManager::install("EnrichDO")
-=======
-if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
-
-BiocManager::install("EnrichDO")
-
->>>>>>> 225d247d561cfa4daf848f49bb427924c906773c
 ```
 
 or github page
 
 ```{r install_chunk2, eval=FALSE}
-<<<<<<< HEAD
 
-=======
->>>>>>> 225d247d561cfa4daf848f49bb427924c906773c
 if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 
 library(devtools)
 devtools::install_github("liangcheng-hrbmu/EnrichDO")
-<<<<<<< HEAD
-=======
-
->>>>>>> 225d247d561cfa4daf848f49bb427924c906773c
 ```
 
 # Introduction
@@ -74,7 +52,6 @@ Disease Ontology (DO) enrichment analysis is an effective means to discover the 
 EnrichDO encompasses various statistical models and visualization schemes for discovering the associations between genes and diseases from biological big data. Currently uploaded to Bioconductor, EnrichDO aims to provide a more convenient and effective DO enrichment analysis tool.
 
 ```{r setup,results='hide'}
-<<<<<<< HEAD
 
 library(EnrichDO)
 ```
@@ -156,30 +133,6 @@ show(demo_result)
 show(demo_result)
 ```
 
-=======
-library(EnrichDO)
-```
-
-# Weighted DO Enrichment Analysis
-
-EnrichDO presents a double weighted iterative model for DO enrichment analysis. Based on the latest annotations of the human genome with DO terms, EnrichDO can identify locally significant enriched terms by applying different initial weights and dynamic weights for annotated genes and integrating the DO graph topology on a global scale. EnrichDO presents an effective and flexible model, which supplies various statistical testing models and multiple testing correction methods.
-
-## doEnrich function
-
-In EnrichDO, we use ***doEnrich*** to realize the enrichment analysis of DO by integrating topological properties of DO graph structures.
-
-### Result description
-
-In the following example, several genes (*demo.data*) are randomly selected from the protein-coding genes (NCBI Entrez ID) for analysis. The parameters of ***doEnrich*** are default.
-
-```{r label=init,eval=TRUE,echo=TRUE,collapse=FALSE,cache=TRUE}
-demo.data=c(1636,351,102,2932,3077,348,4137,54209,5663,5328,23621,3416,3553)
-demo_result<-doEnrich(interestGenes=demo.data)
-show(demo_result)
-```
-
-Running ***doEnrich*** will output the terms and total genes involved in each layer of Directed acyclic graph (DAG) to the user. The ***show*** method can be used to present the overall results to user.
->>>>>>> 225d247d561cfa4daf848f49bb427924c906773c
 
 The result of ***doEnrich*** is *demo_result* which contains *enrich, interestGenes, test, method, m, maxGsize, minGsize, delta, traditional, penalize*. There are 16 columns of *enrich*, including:
 
@@ -207,7 +160,6 @@ The result of ***doEnrich*** is *demo_result* which contains *enrich, interestGe
 
 Generally, a significant P value of the enrichment results should be less than 0.05 or 0.01, indicating a significant association between the interesting gene set and the disease node. In the *enrich*, the node with the most significant enrichment is DOID:0080832, and the DO Term is "mild cognitive impairment", with its P-value being 9.22e-16. These results suggests that there is statistical significance between the interesting gene set and the DO Term of mild cognitive impairment.
 
-<<<<<<< HEAD
 ### Result writing
 
 The ***writeResult*** function can output *DOID, DOTerm, p, p.adjust, geneRatio, bgRatio* and *cg* in the data frame *enrich* as text. The default file name is "result.txt".
@@ -220,61 +172,6 @@ writeResult(EnrichResult = demo_result,file=file.path(tempdir(), "result.txt"), 
 ***writeResult*** has four parameters. *EnrichResult* indicates the enrichment result of ***doEnrich***, *file* indicates the write address of a file. The parameter *Q* (and *P*) indicates that a DO term is output only when *p.adjust* (and *p* value) is less than or equal to *Q* (and *P*). The default values for *P* and *Q* are 1.
 
 In the output file *result.txt*, *geneRatio* represents the intersection of the DO term annotated genes with the interest gene set divided by the interest gene set, and *bgRatio* represents all genes of the DO term divided by the background gene set.
-=======
-The data frame *doterms* contains the information of all DO Terms including DAG structures. You can use showDoTerms to see the details.
-
-```{r eval=TRUE}
-head(doterms)
-showDoTerms(doterms)
-```
-
-### Application cases of doEnrich function
-
-1.Weighted enrichment analysis with multiple parameters. Each parameter in the following example is suitable for enrichment analysis with weights. You can modify the parameter values as required.
-
-```{r}
-weighted_demo<-doEnrich(interestGenes=demo.data,
-                           test="fisherTest",
-                           method="holm",
-                           m=1,
-                           minGsize=10,
-                           maxGsize=2000,
-                           delta=0.05,
-                           penalize=TRUE)
-```
-
-2.The parameter penalize is used to alleviate the impact of different magnitudes of p-values, default value is TRUE. When set to FALSE, the degree of reduction in weight for non-significant nodes is decreased, resulting in a slight increase in significance for these nodes, i.e., their p-value will be reduced.
-
-```{r }
-penalF_demo<-doEnrich(interestGenes=demo.data, penalize=FALSE)
-```
-
-3.Using the traditional enrichment analysis method, it does not reduce weights according to the DAG structure. Parameters *test, method, m, maxGsize* and *minGsize* can be used flexibly.
-
-```{r }
-Tradition_demo<-doEnrich(demo.data, traditional=TRUE)
-```
-
-## writeDoTerms function
-
-***writeDoTerms*** can output *DOID, DOTerm, level, genes, parents, children, gene.len, parent.len* and *child.len* in the data frame *doterms* as text. The default file name is "doterms.txt".
-
-```{r eval=TRUE}
-writeDoTerms(doterms,file=file.path(tempdir(), "doterms.txt"))
-```
-
-## writeResult function
-
-The ***writeResult*** function can output *DOID, DOTerm, p, p.adjust, geneRatio, bgRatio* and *cg* in the data frame *enrich* as text. The default file name is "result.txt".
-
-*geneRatio* represents the intersection of the DO term annotated genes with the interest gene set divided by the interest gene set, and *bgRatio* represents all genes of the DO term divided by the background gene set.
-
-***writeResult*** has four parameters. *EnrichResult* indicates the enrichment result of ***doEnrich***, *file* indicates the write address of a file. The parameter *Q* (and *P*) indicates that a DO term is output only when *p.adjust* (and *p* value) is less than or equal to *Q* (and *P*). The default values for *P* and *Q* are 1.
-
-```{r eval=TRUE}
-writeResult(EnrichResult = demo_result,file=file.path(tempdir(), "result.txt"), Q=1, P=1)
-```
->>>>>>> 225d247d561cfa4daf848f49bb427924c906773c
 
 # Visualization of enrichment results
 
@@ -284,12 +181,8 @@ EnrichDO provides four methods to visualize enrichment results, including bar pl
 
 ***drawBarGraph*** can draw the top *n* nodes with the most significant p-value as bar chart, and the node's p-value is less than *delta* (By default, *n* is 10 and *delta* is 1e-15).
 
-<<<<<<< HEAD
 ```{r fig.cap="bar plot",fig.align='center',fig.width=8,fig.height=6}
 
-=======
-```{r fig.cap="bar plot",fig.align='center',fig.width=7,fig.height=5}
->>>>>>> 225d247d561cfa4daf848f49bb427924c906773c
 drawBarGraph(EnrichResult=demo_result, n=10, delta=0.05)
 ```
 
@@ -297,12 +190,8 @@ drawBarGraph(EnrichResult=demo_result, n=10, delta=0.05)
 
 ***drawPointGraph*** can draw the top *n* nodes with the most significant p-value as bubble plot, and the node's p-value is less than *delta* (By default, *n* is 10 and *delta* is 1e-15).
 
-<<<<<<< HEAD
 ```{r fig.cap="point plot",fig.align='center',fig.width=8,fig.height=6}
 
-=======
-```{r fig.cap="point plot",fig.align='center',fig.width=7,fig.height=5}
->>>>>>> 225d247d561cfa4daf848f49bb427924c906773c
 drawPointGraph(EnrichResult=demo_result, n=10, delta=0.05)
 ```
 
@@ -312,16 +201,9 @@ drawPointGraph(EnrichResult=demo_result, n=10, delta=0.05)
 
 In addition, the ***drawGraphViz*** function can also display the P-value of each node in the enrichment analysis (*pview*=TRUE), and the number of overlapping genes of each DO term and interest gene set (*numview*=TRUE).
 
-<<<<<<< HEAD
 ```{r fig.cap="tree plot",fig.align='center',fig.width=8,fig.height=6}
 
 drawGraphViz(EnrichResult=demo_result, n=10, numview=FALSE, pview=FALSE, labelfontsize=17)
-=======
-```{r fig.cap="tree plot",fig.align='center',fig.width=7,fig.height=5}
-
-drawGraphViz(EnrichResult=demo_result, n=10, numview=FALSE, pview=FALSE, labelfontsize=17)
-
->>>>>>> 225d247d561cfa4daf848f49bb427924c906773c
 ```
 
 ## drawHeatmap function
@@ -330,12 +212,8 @@ drawGraphViz(EnrichResult=demo_result, n=10, numview=FALSE, pview=FALSE, labelfo
 
 ***drawHeatmap*** also provides additional parameters from the pheatmap function, which you can set according to your needs. Default *DOID_n* is 10, *gene_n* is 50, *fontsize_row* is 10, *readable* is TRUE.
 
-<<<<<<< HEAD
 ```{r fig.cap="heatmap",fig.align='center',fig.width=8,fig.height=6}
 
-=======
-```{r fig.cap="heatmap",fig.align='center',fig.width=7,fig.height=5}
->>>>>>> 225d247d561cfa4daf848f49bb427924c906773c
 drawHeatmap(interestGenes=demo.data,
             EnrichResult=demo_result,
             gene_n=10,
@@ -347,34 +225,22 @@ drawHeatmap(interestGenes=demo.data,
 
 Draw(***drawBarGraph ,drawPointGraph ,drawGraphViz***) from ***writeResult*** output files, so you don't have to wait for the algorithm to run.
 
-<<<<<<< HEAD
 ```{r fig.width=8,fig.height=6}
-=======
-```{r }
->>>>>>> 225d247d561cfa4daf848f49bb427924c906773c
 #Firstly, read the wrireResult output file,using the following two lines
 data <- read.delim(file.path(system.file("examples", package="EnrichDO"), "result.txt"))
 enrich <- convDraw(resultDO=data)
 
 #then, Use the drawing function you need
 drawGraphViz(enrich=enrich)    #Tree diagram
-<<<<<<< HEAD
 
 drawPointGraph(enrich=enrich, delta = 0.05)  #Bubble diagram
 
-=======
-drawPointGraph(enrich=enrich, delta = 0.05)  #Bubble diagram
->>>>>>> 225d247d561cfa4daf848f49bb427924c906773c
 drawBarGraph(enrich=enrich, delta = 0.05)    #Bar plot
 ```
 
 # Session information
 
-<<<<<<< HEAD
 ```{r session-info,cache = FALSE,echo=TRUE,message=TRUE,warning=FALSE}
 
-=======
-```{r session-info,cache = F,echo=T,message=T,warning=FALSE}
->>>>>>> 225d247d561cfa4daf848f49bb427924c906773c
 sessionInfo()
 ```
