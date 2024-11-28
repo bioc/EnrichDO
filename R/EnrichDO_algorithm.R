@@ -3,11 +3,9 @@
 #'@author Haixiu Yang
 #'@param resultDO Receives the file output by the wrireResult function, which is used to visually display the enrichment results (without running the enrichment operation again).
 #'@importFrom dplyr mutate filter select
-#'@importFrom stringr str_c
 #'@importFrom tidyr separate
 #'@import purrr
 #'@import hash
-#'@importFrom utils str
 #'@importFrom S4Vectors DataFrame
 #'@importFrom magrittr `%>%`
 #'@importFrom BiocGenerics intersect
@@ -92,8 +90,7 @@ computeTermSig <- function(interestGenes, level, DOID, parents, childrenToTest, 
 
     if (penalize == TRUE) {
         penal <- map_dbl(childrenToTest, function(c.DOID) {
-            penall <- max(1/10 * log10(.Machine$double.xmin)/(log10(.EnrichDOenv$enrichPvalue[[c.DOID]]) + log10(p)),
-                1)
+            penall <- max(1/10 * log10(.Machine$double.xmin)/(log10(.EnrichDOenv$enrichPvalue[[c.DOID]]) + log10(p)), 1)
             return(penall)
         })
     } else {
@@ -176,8 +173,8 @@ Test <- function(test, interestGenes, genes, weights) {
     wc <- length(c)
     wd <- length(d)
 
-    switch(test, fisherTest = fisherTest(wa, wb, wc, wd), hypergeomTest = hypergeomTest(wa, wb, wc, wd), binomTest = binomTest(wa,
-        wb, wc), chisqTest = chisqTest(wa, wb, wc, wd), logoddTest = logoddTest(wa, wb, wc, wd))
+    switch(test, fisherTest = fisherTest(wa, wb, wc, wd), hypergeomTest = hypergeomTest(wa, wb, wc, wd), binomTest = binomTest(wa, wb, wc),
+        chisqTest = chisqTest(wa, wb, wc, wd), logoddTest = logoddTest(wa, wb, wc, wd))
 }
 
 ### fisher
@@ -242,9 +239,7 @@ getAncestors <- function(DOID, trace = FALSE) {
         ancestors <<- append(ancestors, p.ancestors)
     })
     ancestors <- unique(ancestors)
-    # debug
-    if (trace)
-        str(ancestors)
+    # # debug if (trace) str(ancestors)
     return(ancestors)
 }
 

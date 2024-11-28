@@ -8,7 +8,7 @@
 ##' @return print info
 ##' @export
 setMethod("show", "EnrichResult", function(object) {
-    message("\n------------------------- EnrichResult object -------------------------\n")
+    message("------------------------- EnrichResult object -------------------------\n")
     message("Method of enrichment:")
     if (object@traditional == TRUE) {
         message("\t classic ORA")

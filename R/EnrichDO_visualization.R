@@ -25,20 +25,31 @@ drawBarGraph <- function(EnrichResult = NULL, enrich = NULL, n = 10, delta = 1e-
     } else {
         warning("Do not assign EnrichResult and enrich simultaneously")
     }
+    enrich$DO <- paste0(enrich$DOID, enrich$DOTerm, sep = "  ")
     data <- enrich %>%
         filter(p <= delta) %>%
-        select(DOID, DOTerm, p, cg.len, ig.len) %>%
-        mutate(log10p = -log10(p), DO = str_c(DOID, DOTerm, sep = "  ")) %>%
+        select(DOID, DOTerm, p, cg.len, ig.len,DO) %>%
+        mutate(log10p = -log10(p)) %>%
         mutate(geneRatio = as.numeric(cg.len)/as.numeric(ig.len))
     data <- data[1:n, ]
     data <- na.omit(data)
     if (dim(data)[1] < n) {
-        message(str_c("The threshold delta is too low, only ", dim(data)[1], " nodes are less than the threshold",
-            "\n"))
+        message("The threshold delta is too low, only ", dim(data)[1], " nodes are less than the threshold", "\n")
     }
 
-    ggplot(data, aes(x = reorder(DO, log10p), y = geneRatio, fill = log10p)) + geom_bar(stat = "identity") +
-        coord_flip() + scale_x_discrete(position = "top") + scale_fill_gradient(low = "orange", high = "red")
+    ggplot(data, # 绘图使用的数据
+           aes(x = reorder(DO,log10p), y = geneRatio, fill = log10p ))+ # 横轴坐标及颜色分类填充
+      geom_bar(stat = "identity",width = 0.6)+ # 绘制条形图及宽度设置
+      scale_fill_gradient(low = "blue",high = "red")+
+      coord_flip()+theme_bw()+ # 横纵坐标反转及去除背景色
+      labs(x = "",y = "GeneRatio",title = "")+ # 设置坐标轴标题及标题
+      theme(axis.title = element_text(size = 12), # 坐标轴标题大小
+            axis.text = element_text(size = 10,color = "black"), # 坐标轴标签大小
+            # plot.title = element_text(size = 14,hjust = 0.5,face = "bold"), # 标题设置
+            legend.title = element_text(size = 12), # 图例标题大小
+            legend.text = element_text(size = 10), # 图例标签大小
+            plot.margin = unit(c(0.5,0.5,0.5,0.5),"cm")) +# 图边距
+      theme(panel.grid =element_blank())
 
 }
 #'@title drawPointGraph
@@ -67,42 +78,33 @@ drawPointGraph <- function(EnrichResult = NULL, enrich = NULL, n = 10, delta = 1
     } else {
         warning("Do not assign EnrichResult and enrich simultaneously")
     }
-
+    enrich$DO <- paste0(enrich$DOID, enrich$DOTerm, sep = " ")
     data <- enrich %>%
         filter(p <= delta) %>%
-        select(DOID, DOTerm, p, p.adjust, cg.len, gene.len, ig.len) %>%
-        mutate(log10p = -log10(p), DO = str_c(DOID, DOTerm, sep = "  ")) %>%
+        select(DOID, DOTerm, p, p.adjust, cg.len, gene.len, ig.len, DO) %>%
+        mutate(log10p = -log10(p)) %>%
         mutate(geneRatio = as.numeric(cg.len)/as.numeric(ig.len))
     data <- data[1:n, ]
     data <- na.omit(data)
     if (dim(data)[1] < n) {
-        message(str_c("The threshold delta is too low, only ", dim(data)[1], " nodes are less than the threshold",
-            "\n"))
+        message("The threshold delta is too low, only ", dim(data)[1], " nodes are less than the threshold", "\n")
     }
 
-    ggplot(data) + geom_point(mapping = aes(x = geneRatio, y = reorder(DO, log10p), size = as.numeric(cg.len),
-        color = log10p)) + scale_y_discrete(position = "right") + scale_color_gradient(low = "blue", high = "red")
-}
-#'@title writeDoTerms
-#'@description Output DOterms as text
-#'@param doterms a data frame of do terms.
-#'@param file the address and name of the output file.
-#'@author Haixiu Yang
-#'@return text
-#'@importFrom dplyr mutate select
-#'@importFrom readr write_delim
-#'@importFrom magrittr `%>%`
-#'@export
-#'@examples
-#'writeDoTerms(doterms, file=file.path(tempdir(), 'doterms.txt'))
-writeDoTerms <- function(doterms = doterms, file) {
-    doterms <- as.data.frame(doterms)
-    data <- doterms %>%
-        mutate(genes = map_chr(gene.arr, str_c, collapse = ",")) %>%
-        mutate(parents = map_chr(parent.arr, str_c, collapse = ",")) %>%
-        mutate(children = map_chr(child.arr, str_c, collapse = ",")) %>%
-        select(DOID, DOTerm, level, genes, parents, children, gene.len, parent.len, child.len)
-    write_delim(data, file = file, delim = "\t", eol = "\n", quote = "none")
+    ggplot(data,aes(y=geneRatio,x=reorder(DO, log10p))) +
+      geom_point(aes(size = as.numeric(cg.len),fill = log10p ),shape = 21,color="black")+
+      coord_flip() + theme_bw() +
+      scale_fill_gradient(low = "blue",high = "red")+
+      # scale_size_continuous(range = c(3, 8)) +
+      labs(x = "",y = "GeneRatio",title = "",
+           color = expression(log10p),size = "Count")+
+      theme(axis.title = element_text(size = 12),
+            axis.text = element_text(size = 10,color = "black"),
+            plot.title = element_text(size = 14,hjust = 0.5,face = "bold"),
+            # panel.grid.major = element_line(colour = "grey", size = 0.4, linetype = "dashed"),# 网格线灰色虚线
+            # panel.grid.minor = element_line(colour = "grey", size = 0.4, linetype = "dashed"),# 网格线灰色虚线
+            # panel.border = element_rect(fill = "NA", size = 0.5, colour = "black"),
+            legend.title = element_text(size = 12),legend.text = element_text(size = 10))
+
 }
 
 #'@title showDoTerms
@@ -138,8 +140,8 @@ showDoTerms <- function(doterms = doterms) {
 #'@author Haixiu Yang
 #'@return text
 #'@importFrom dplyr mutate  select arrange
-#'@importFrom readr write_delim
 #'@importFrom magrittr `%>%`
+#'@importFrom utils write.table
 #'@export
 #'@examples
 #'demo.data <- c(1636,351,102,2932,3077,348,4137,54209)
@@ -148,14 +150,14 @@ showDoTerms <- function(doterms = doterms) {
 writeResult <- function(EnrichResult = NULL, file, Q = 1, P = 1) {
 
     enrich <- as.data.frame(EnrichResult@enrich)
+    enrich$cg <- sapply(enrich$cg.arr,function(x){paste0(x, collapse = ",")})
     data <- enrich %>%
-        mutate(cg = map_chr(cg.arr, str_c, collapse = ",")) %>%
         mutate(geneRatio = paste0(cg.len, "/", ig.len)) %>%
         mutate(bgRatio = paste0(gene.len, "/", length(dotermgenes))) %>%
         select(DOID, DOTerm, p, p.adjust, geneRatio, bgRatio, cg) %>%
         arrange(p)
     data <- dplyr::filter(data, p <= P, p.adjust <= Q)
-    write_delim(data, file = file, delim = "\t", eol = "\n", quote = "none")
+    write.table(data, file =  file, sep = "\t", quote = FALSE, col.names = TRUE,row.names = FALSE)
 }
 #'@title drawGraphViz
 #'@description the enrichment results are shown in a tree diagram
@@ -175,8 +177,6 @@ writeResult <- function(EnrichResult = NULL, file, Q = 1, P = 1) {
 #'@importFrom magrittr `%>%`
 #'@importFrom methods new
 #'@importFrom tidyr unnest
-#'@importFrom grDevices heat.colors
-#'@importFrom RColorBrewer brewer.pal
 #'@importFrom dplyr filter
 #'@importFrom graphics text
 #'@export
@@ -250,8 +250,11 @@ drawGraphViz <- function(EnrichResult = NULL, enrich = NULL, n = 10, labelfontsi
     names(labelfontsize) <- data.extends$DOID
     nAttrs$fontsize <- labelfontsize
 
-    colors <- heat.colors(9)
-    colors <- colors[9:1]
+    # colors <- heat.colors(9)
+    # colors <- colors[9:1]
+    colors <- c("#FFFFBF","#FEEA9F","#FEE090","#FDBE70","#FDAE61","#FA9857","#F7824D", "#F46D43","#D73027")
+
+
 
     data.extends <- enrich0 %>%
         filter(DOID %in% nodes(rEG)) %>%
@@ -287,8 +290,8 @@ drawGraphViz <- function(EnrichResult = NULL, enrich = NULL, n = 10, labelfontsi
             if (pval != 1) {
                 pval <- format(pval, digit = 5, scientific = TRUE)
             }
-            text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])), labels = pval,
-                pos = 1, col = "black", cex = 0.5)
+            text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])), labels = pval, pos = 1, col = "black",
+                cex = 0.5)
         }
     }
     if (numview == TRUE) {
@@ -297,8 +300,8 @@ drawGraphViz <- function(EnrichResult = NULL, enrich = NULL, n = 10, labelfontsi
             if (num == 0) {
                 num <- ""
             }
-            text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])), labels = num,
-                pos = 3, col = "dark blue", cex = 0.5)
+            text(getX(getNodeCenter(g1layout@AgNode[[i]])), getY(getNodeCenter(g1layout@AgNode[[i]])), labels = num, pos = 3, col = "dark blue",
+                cex = 0.5)
         }
     }
 
@@ -319,7 +322,6 @@ drawGraphViz <- function(EnrichResult = NULL, enrich = NULL, n = 10, labelfontsi
 #'@importFrom BiocGenerics unique
 #'@importFrom purrr map2
 #'@importFrom BiocGenerics intersect setdiff
-#'@importFrom grDevices colorRampPalette
 #'@importFrom clusterProfiler bitr
 #'@export
 #'@examples
@@ -327,8 +329,7 @@ drawGraphViz <- function(EnrichResult = NULL, enrich = NULL, n = 10, labelfontsi
 #'sample6 <- doEnrich(interestGenes=demo.data,maxGsize = 100, minGsize=10)
 #'drawHeatmap(interestGenes=demo.data, EnrichResult = sample6, gene_n = 10)
 
-drawHeatmap <- function(interestGenes, EnrichResult = NULL, DOID_n = 10, gene_n = 50, fontsize_row = 10, readable = TRUE,
-    ...) {
+drawHeatmap <- function(interestGenes, EnrichResult = NULL, DOID_n = 10, gene_n = 50, fontsize_row = 10, readable = TRUE,...) {
 
     enrich <- as.data.frame(EnrichResult@enrich)
     n <- DOID_n
@@ -346,13 +347,12 @@ drawHeatmap <- function(interestGenes, EnrichResult = NULL, DOID_n = 10, gene_n 
     m <- min(gene_n, length(interestgenes))
 
     if (length(diffGene) != 0) {
-        note <- paste0("\033[31m", "The following genes you input do not exist in the top DOID_n nodes:", "\n",
-            paste0(diffGene, collapse = " "), "\n", "\033[39m")
+        note <- paste0("\033[31m", "The following genes you input do not exist in the top DOID_n nodes:", "\n", paste0(diffGene, collapse = " "),
+            "\n", "\033[39m")
         message(note)
     }
 
-    weightMatrix <- matrix(0, nrow = n + 1, ncol = length(interestgenes), dimnames = list(c(data$DOID, "colSum"),
-        interestgenes))
+    weightMatrix <- matrix(0, nrow = n + 1, ncol = length(interestgenes), dimnames = list(c(data$DOID, "colSum"), interestgenes))
     .EnrichDOenv$weightMatrix <- weightMatrix
 
 
@@ -375,9 +375,14 @@ drawHeatmap <- function(interestGenes, EnrichResult = NULL, DOID_n = 10, gene_n 
         row.names(weightmatrix) <- symbol$SYMBOL
 
     }
-    colors <- colorRampPalette(brewer.pal(11, "RdYlBu")[6:3])(10)
-    pheatmap(weightmatrix, border_color = NA, cluster_cols = FALSE, color = colors, angle_col = 45, fontsize_row = fontsize_row,
-        ...)
+
+    #colors <- colorRampPalette(brewer.pal(11, 'RdYlBu')[6:3])(10)
+    colors <- c("#FFFFBF","#FEF4AF","#FEEA9F","#FEE090","#FDCF80","#FDBE70","#FDAE61","#FA9857","#F7824D", "#F46D43")
+    # colors <- heat.colors(9)
+    # colors <- colors[9:1]
+    pheatmap(weightmatrix,border_color = "white", cellwidth = 25, cellheight = 15,
+             cluster_cols = TRUE, color = colors, angle_col = 45, fontsize_row = fontsize_row, ...)
+
 
 }
 
