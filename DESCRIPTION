@@ -1,7 +1,7 @@
 Package: EnrichDO
 Type: Package
 Title: a Global Weighted Model for Disease Ontology Enrichment Analysis
-Version: 0.99.15
+Version: 1.2.0
 Authors@R: c(
           person("Liang","Cheng",,"liangcheng@hrbmu.edu.cn",role=c("aut")),
           person("Haixiu","Yang",,"yanghaixiu@ems.hrbmu.edu.cn",role=c("aut")),
@@ -18,11 +18,11 @@ Encoding: UTF-8
 LazyData: true
 Imports: BiocGenerics, Rgraphviz, clusterProfiler, hash, S4Vectors,
     dplyr, ggplot2, graph, magrittr, methods, pheatmap, graphics, utils,
-    purrr, readr, stringr, tidyr, grDevices, stats, RColorBrewer
+    purrr, tidyr, stats
 biocViews: Annotation, Visualization, 
         GeneSetEnrichment, Software
 Depends: 
-    R (>= 3.5.0)
+    R (>= 4.0.0)
 RoxygenNote: 7.3.1
 Suggests: 
     knitr,
