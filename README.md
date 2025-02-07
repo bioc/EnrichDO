@@ -4,6 +4,11 @@
 
 ***EnrichDO*** exhibits higher accuracy that often yield more specific significant DO terms, which alleviate the over enriched problem. The input data are the protein-coding genes of the human genome, using the ENTREZID format of NCBI.
 
+## Licenses
+
+- **Code/Software**: Licensed under the [MIT License](LICENSE)
+- **Data files**: Released under [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/) (CC0) waiver
+
 ## Installation
 
 To install this package, start R (version "4.4"), BiocManager (version "3.20") and enter:
