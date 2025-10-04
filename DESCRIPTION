@@ -1,0 +1,33 @@
+Package: EnrichDO
+Type: Package
+Title: a Global Weighted Model for Disease Ontology Enrichment Analysis
+Version: 1.4.0
+Authors@R: c(
+          person("Liang","Cheng",email = "liangcheng@hrbmu.edu.cn",role = "aut"),
+          person("Haixiu","Yang",email = "yanghaixiu@ems.hrbmu.edu.cn",role = "aut"),
+          person("Hongyu","Fu",email = "2287531995@qq.com",role=c("aut","cre"))
+          )
+Description: To implement disease ontology (DO) enrichment analysis, this package is designed and presents
+            a double weighted model based on the latest annotations of the human genome with DO terms, by
+            integrating the DO graph topology on a global scale. This package exhibits high accuracy that
+            it can identify more specific DO terms, which alleviates the over enriched problem. The package
+            includes various statistical models and visualization schemes for discovering the associations
+            between genes and diseases from biological big data.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: BiocGenerics, Rgraphviz, hash, S4Vectors,
+    dplyr, ggplot2, graph, magrittr, methods, pheatmap, graphics, utils,
+    purrr, tidyr, stats
+biocViews: Annotation, Visualization, 
+        GeneSetEnrichment, Software
+Depends: 
+    R (>= 4.0.0)
+RoxygenNote: 7.3.3
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    BiocStyle
+VignetteBuilder: knitr
+Config/testthat/edition: 3
