@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6d60e93c-94b5-4d0b-84e5-1d3c1890a0b1" name="Changes" comment="v 1.6.0">
+      <change afterPath="$PROJECT_DIR$/R/sysdata.rda" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build/vignette.rds" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/datalist" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inst/CITATION" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inst/doc/EnrichDO.R" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inst/doc/EnrichDO.Rmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inst/doc/EnrichDO.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/man/viewDetailResult.Rd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/man/viewSummaryResult.Rd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.Rbuildignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DESCRIPTION" beforeDir="false" afterPath="$PROJECT_DIR$/DESCRIPTION" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NAMESPACE" beforeDir="false" afterPath="$PROJECT_DIR$/NAMESPACE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/EnrichDO_algorithm.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/EnrichDO_algorithm.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/EnrichDO_class.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/EnrichDO_class.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/EnrichDO_function.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/EnrichDO_function.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/EnrichDO_method.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/EnrichDO_method.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/EnrichDO_package.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/EnrichDO_package.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/EnrichDO_visualization.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/EnrichDO_visualization.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/data.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/data.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R/zzz.R" beforeDir="false" afterPath="$PROJECT_DIR$/R/zzz.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inst/scripts/EnrichDO_exampleTest.R" beforeDir="false" afterPath="$PROJECT_DIR$/inst/scripts/EnrichDO_exampleTest.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/man/convDraw.Rd" beforeDir="false" afterPath="$PROJECT_DIR$/man/convDraw.Rd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/man/doEnrich.Rd" beforeDir="false" afterPath="$PROJECT_DIR$/man/doEnrich.Rd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/man/drawBarGraph.Rd" beforeDir="false" afterPath="$PROJECT_DIR$/man/drawBarGraph.Rd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/man/drawGraphViz.Rd" beforeDir="false" afterPath="$PROJECT_DIR$/man/drawGraphViz.Rd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/man/drawHeatmap.Rd" beforeDir="false" afterPath="$PROJECT_DIR$/man/drawHeatmap.Rd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/man/drawPointGraph.Rd" beforeDir="false" afterPath="$PROJECT_DIR$/man/drawPointGraph.Rd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/man/show-methods.Rd" beforeDir="false" afterPath="$PROJECT_DIR$/man/show-methods.Rd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/man/showDoTerms.Rd" beforeDir="false" afterPath="$PROJECT_DIR$/man/showDoTerms.Rd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/man/writeResult.Rd" beforeDir="false" afterPath="$PROJECT_DIR$/man/writeResult.Rd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/testthat/test-doEnrich.R" beforeDir="false" afterPath="$PROJECT_DIR$/tests/testthat/test-doEnrich.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/testthat/test-drawGraphViz.R" beforeDir="false" afterPath="$PROJECT_DIR$/tests/testthat/test-drawGraphViz.R" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesisData/ALL_BP_genes.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesisData/Alzheimer_curated.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesisData/DISEASE_Anno.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesisData/DOSE_Anno.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesisData/DisGeNET_Anno.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesisData/EnrichDO_directAnno.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesisData/HallMark_geneSet.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesisData/IBD.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesisData/MalaCards_Anno.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesisData/PAAD_GSE119794.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesisData/PAAD_GSE16515.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesisData/PAAD_GSE16515_DEGresult.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesisData/extdata_interpretation.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vignettes/EnrichDO.Rmd" beforeDir="false" afterPath="$PROJECT_DIR$/vignettes/EnrichDO.Rmd" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_E:/001-工作/2024-07-04-4 01_EnrichDO/EnrichDO_1.6.0/EnrichDO" value="3BiMBvmgzwCY1BhnbJlmIpGBOla" />
+    </persistenceIdMap>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;liangcheng-hrbmu&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/liangcheng-hrbmu/EnrichDO.git&quot;,
+    &quot;accountId&quot;: &quot;f09c0d84-61d5-4f2b-8eed-de8b53976f3e&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="3BiMBvmgzwCY1BhnbJlmIpGBOla" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "devel",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-PY-253.31033.139" />
+        <option value="bundled-python-sdk-2653e85de345-6d6dccd035ac-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.31033.139" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6d60e93c-94b5-4d0b-84e5-1d3c1890a0b1" name="Changes" comment="" />
+      <created>1774967306096</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1774967306096</updated>
+      <workItem from="1774967307284" duration="499000" />
+      <workItem from="1774967814761" duration="313000" />
+    </task>
+    <task id="LOCAL-00001" summary="v 1.6.0">
+      <option name="closed" value="true" />
+      <created>1774967531670</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1774967531670</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="devel" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="v 1.6.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="v 1.6.0" />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>
